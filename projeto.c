@@ -39,6 +39,7 @@
 #include "projeto.h"
 #include "ctype.h"
 #include <time.h>
+#include <stddef.h>
 
 #define NULL0 -1;
 #define NUMROWS 10
@@ -55,9 +56,9 @@ char * UFP6[] = { //UFP6 CORRIGIDO
 
 
 char** create_Dynamic_Matrix(int lines, int cols) {
-    char** matrix = (char**)malloc(lines * sizeof(char*));
+    char** matrix = (char**)calloc(lines,  sizeof(char*));
     for (int i = 0; i < lines; i++) {
-        *(matrix+i) = (char*)malloc(cols * sizeof(char));
+        *(matrix+i) = (char*)calloc(cols, sizeof(char));
     }
     return matrix;
 }
@@ -70,20 +71,22 @@ void free_Dynamic_Matrix(char** matrix, int lines) {
     free(matrix);
 }
 
-void fill_Matrix(char** matrix, int lines, int cols, char dados[10][10]) {
+void fill_Matrix(char** matrix, int lines, int cols, char dados[][MAX_COLS_PALS]) {
     for (int i = 0; i < lines; i++) {
-        for (int j = 0; j < cols; j++) {
+       /*for (int j = 0; j <= cols; j++) {
             *(*(matrix+i)+j) = *(*(dados+i)+j);
-        }
+        }*/
+        strcpy(*(matrix+i),dados[i]);
     }
 }
 
 void print_Matrix(char** matrix, int numRow, int numCollum) {
     for (int i = 0; i < numRow; i++) {
-        for (int j = 0; j < numCollum; j++) {
+        /*for (int j = 0; j < numCollum; j++) {
             printf("%c ", *(*(matrix+i)+j));
-        }
-        printf("\n");
+
+        printf("|\n");*/
+        printf("%s|\n",*(matrix+i));
     }
 }
 
@@ -110,6 +113,7 @@ void decimal_to_binary(int value, char **matriz, int line, int column) {
     int h = 0;
     char charvalue='\0';
     int binaryNum[8];
+
     while (value > 0) {
         // storing remainder in binary array
         binaryNum[h] = value % 2;
@@ -125,7 +129,10 @@ void decimal_to_binary(int value, char **matriz, int line, int column) {
 }
 
 /** req 2 **/
-void string_to_binary(char **matriz,int numpalavras) {
+char** string_to_binary(char **matriz,int numpalavras) {
+
+    char **DynamicMatrixCodes = (char **) create_Dynamic_Matrix(numpalavras, MAX_COLS_UFP6);
+
     /** a idea é pegar na string original
      * tirar o size
      * correr em loop e separar a string em diferentes char
@@ -133,24 +140,29 @@ void string_to_binary(char **matriz,int numpalavras) {
      */
     for (int i = 0; i < numpalavras; i++) {
 
-        int size = strlen(*(matriz + i));
+        size_t size = strlen(*(matriz + i));
+        printf("string_to_binary(): size=%d | %s \n",size,*(matriz+i));
         int g = 0;
         int value;
 
         for (int j = 0; j < size; j++) {
+
             value = matriz[i][j] - '0';
             if (isupper(matriz[i][j])) {
                 value = value + 19;
-                decimal_to_binary(value, matriz, i, g);
+                decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else if (value <= 9) {
-                decimal_to_binary(value, matriz, i, g);
+                decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else {
                 value = value - 39;
-                decimal_to_binary(value, matriz, i, g);
+                decimal_to_binary(value, DynamicMatrixCodes, i, g);
             }
+            g=g+size;
         }
+        ;
         printf("\n");
     }
+    return DynamicMatrixCodes;
 }
 
 /*
@@ -363,43 +375,45 @@ void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, in
 
         srand(time(NULL)); //gera a aleatoriedade
 
-        char dadosC1[10][10] = {
-                {"o"},
-                {"Ola"},
-                {"xpto"},
-                {"LP"},
-                {"1"},
-                {"aba"},
-                {"fgagji9"}
+        int linhasC1 = 7;
+        int colunasC1 = MAX_COLS_PALS;
+
+
+        char dadosC1[][MAX_COLS_PALS] = {
+                "o",
+                "Ola",
+                "xpto",
+                "LP",
+                "1",
+                "aba",
+                "fgagj9"
         };
 
-        char dadosC2[10][10] = {
+        int linhasC2 = 4;
+        int colunasC2 = MAX_COLS_PALS;
+
+        char dadosC2[4][MAX_COLS_PALS] = {
                 {"b"},
                 {"MunDo"},
                 {"PL"},
                 {"11"}
         };
 
-
-        int linhasC1 = 7;
-        int colunasC1 = 7;
-        int linhasC2 = 6;
-        int colunasC2 = 10;
-        char palavra[8];
-        char *valor = (char *) &palavra;
+        char palavra[8]="";
+        char *valor = palavra;
 
         //Criação da matrix TESTE c1
         char **DynamicMatrixC1 = (char **) create_Dynamic_Matrix(linhasC1, colunasC1);
         fill_Matrix(DynamicMatrixC1, linhasC1, colunasC1, dadosC1);
 
-        //Criação da matrix TESTE c2
+        /*Criação da matrix TESTE c2
         char **DynamicMatrixC2 = create_Dynamic_Matrix(linhasC2, colunasC2);
         fill_Matrix(DynamicMatrixC2, linhasC2, colunasC2, dadosC2);
 
         //Criação da matrix Matrix1
         char **Matrix1 = create_Dynamic_Matrix(linhasC1, colunasC1);
         fill_Matrix(Matrix1, linhasC1, colunasC1, dadosC1);
-
+*\
         //fill_Matrix(Matrix1, LINES, COLS, (char[10]) palavra);
 
         /** Imprimir as matrizes para teste
@@ -411,7 +425,7 @@ void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, in
          *
          */
 
-        print_Matrix(Matrix1, linhasC1,colunasC1);
+
 
         /* teste decimal to binary e string to binary
          * decimal to binary com os numeros funciona bem, o string to binary não está a dar o
@@ -426,12 +440,14 @@ void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, in
             printf("\n");
             add_to_matrix(Matrix1, j, 0, 7, 20, valor);
         }*/
-        print_Matrix(Matrix1, linhasC1,colunasC1);
+       // print_Matrix(Matrix1, linhasC1,colunasC1);
 
 
         print_Matrix(DynamicMatrixC1, linhasC1,colunasC1);
 
-        string_to_binary(DynamicMatrixC1,7);
+        char ** DynamicMatrixCodesC1 = string_to_binary(DynamicMatrixC1,linhasC1);
+
+
         //string_to_binary(Matrix1);
         //add_to_matrix(DynamicMatrixC1, 3, 4, 4, 5, valor,palavra);
         // a usar notação array funciona, apontadores já não(nao sei porquê)
@@ -439,6 +455,6 @@ void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, in
          * free_Dynamic_Matrix(DynamicMatrixC1, linhasC1);
          * free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
          */
-        print_Matrix(DynamicMatrixC1, linhasC1,colunasC1);
+        print_Matrix(DynamicMatrixCodesC1, linhasC1,colunasC1);
         return 0;
     }
