@@ -23,8 +23,8 @@ typedef struct set{
 }SET;
 
 typedef struct Words_Holder{
-   SET set1;
-   SET set2;
+    SET set1;
+    SET set2;
 }WORDS_HOLDER;
 
 typedef struct Val_Ad_Words_Holder{
@@ -49,6 +49,7 @@ typedef struct Ll_Words_Holder{
     struct Node_Ll_Words_Holder * pToHead;
     struct Node_Ll_Words_Holder * pToTail;
 }LL_WORDS_HOLDER;
+
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
