@@ -136,7 +136,7 @@ void print_Matrix(char** matrix, int numRow, int numCollum) {
  * **/
 
 /** req 2 **/
-void decimal_to_binary(int value, char **matriz, int line, int column) {
+int decimal_to_binary(int value, char **matriz, int line, int column) {
     //  printf("TESTE-> valor em decimal fica %d\n", value);
     //array com os valores de binario
     // counter for binary array
@@ -159,8 +159,8 @@ void decimal_to_binary(int value, char **matriz, int line, int column) {
         charvalue = binaryNum[j]+'0';
         matriz[line][column] = charvalue;
     }
+    return column;
 }
-
 /** req 2 **/
 char** string_to_binary(char **matriz,int numpalavras) {
 
@@ -174,8 +174,8 @@ char** string_to_binary(char **matriz,int numpalavras) {
     for (int i = 0; i < numpalavras; i++) {
 
         size_t size = strlen(*(matriz + i));
-        printf("string_to_binary(): size=%d | %s \n",size,*(matriz+i));
-        int g = 0;
+
+        int g=0;
         int value;
 
         for (int j = 0; j < size; j++) {
@@ -183,16 +183,14 @@ char** string_to_binary(char **matriz,int numpalavras) {
             value = matriz[i][j] - '0';
             if (isupper(matriz[i][j])) {
                 value = value + 19;
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else if (value <= 9) {
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else {
                 value = value - 39;
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             }
-            g=g+size;
         }
-        ;
         printf("\n");
     }
     return DynamicMatrixCodes;
@@ -268,15 +266,16 @@ void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col) {
 }
 
 /** req 4 **/
-void check_segment(char **matrix,char **matrix2) {
-    int value = 1 ;
-    for(int i=0;i<=MAX_COLS_UFP6;i++) {
-        for (int j = 0; j <=MAX_COLS_PALS;j++){
+void check_segment(char **matrix,char **matrix2,int palavras1,int palavras2) {
+    int value;
+    for(int i=0;i<=palavras1;i++) {
+        for (int j = 0; j <=palavras2;j++){
             value = strcmp(*(matrix+i),*(matrix2+j));
             if(value == 0){
-                printf("%s %s são combinações iguais",*(matrix+i),*(matrix2+j));
-                value = 1;
+                printf("\n");
+                printf("%s %s sao combinacoes iguais\n",*(matrix+i),*(matrix2+j));
             }
+           ;
         }
     }
 }
@@ -425,11 +424,11 @@ int main_projeto(int argc, const char *argv[]) {
     int linhasC2 = 4;
     int colunasC2 = MAX_COLS_PALS;
 
-    char dadosC2[4][MAX_COLS_PALS] = {
-            {"b"},
-            {"MunDo"},
-            {"PL"},
-            {"11"}
+    char dadosC2[][MAX_COLS_PALS] = {
+            "b",
+            "MunDo",
+            "LP",
+            "aba"
     };
 
     char dadosarray[] = {1,2,3,4,5,6,7};
@@ -484,6 +483,7 @@ int main_projeto(int argc, const char *argv[]) {
      }*/
     // print_Matrix(Matrix1, linhasC1,colunasC1);
 
+    check_segment(DynamicMatrixC1,DynamicMatrixC2,6,3);
 
     print_Matrix(DynamicMatrixC1, linhasC1,colunasC1);
 
@@ -498,5 +498,7 @@ int main_projeto(int argc, const char *argv[]) {
      * free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
      */
     print_Matrix(DynamicMatrixCodesC1, linhasC1,colunasC1);
+
+
     return 0;
 }

@@ -68,7 +68,7 @@ char gerarPalavraAleatoria(char *palavra, int tamanho);
 
 void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col);
 
-void check_segment(char **matrix,char **matrix2);
+void check_segment(char **matrix,char **matrix2,int palavras1, int palavras2);
 
 void seach_string(const char *sequence, const char *words[], int numWords);
 
@@ -86,7 +86,7 @@ char * create_matrix(int numRows, int numCollums, char ** matrix);
 
 char** string_to_binary(char **matriz,int numpalavras);
 
-void decimal_to_binary(int value, char **matriz, int line, int column);
+int decimal_to_binary(int value, char **matriz, int line, int column);
 
 void print_matrix(char ** matrix);
 
