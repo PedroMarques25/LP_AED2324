@@ -56,45 +56,79 @@ char * UFP6[] = { //UFP6 CORRIGIDO
 
 
 char** create_Dynamic_Matrix(int lines, int cols) {
-    char** matrix = (char**)calloc(lines,  sizeof(char*));
-    for (int i = 0; i < lines; i++) {
-        *(matrix+i) = (char*)calloc(cols, sizeof(char));
+    char** matrix = (char**)calloc(lines, sizeof(char*));
+    if (matrix == NULL) {
+        printf("Erro na alocação de memória para linhas.\n");
+        exit(EXIT_FAILURE);
     }
+
+    for (int i = 0; i < lines; i++) {
+        matrix[i] = (char*)calloc(cols, sizeof(char));
+        if (matrix[i] == NULL) {
+            printf("Erro na alocação de memória para colunas.\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
     return matrix;
 }
 
-char* create_Dynamic_Array(int lines)
-{
-    char* array_dinamico = (char*)malloc(lines * sizeof(char));
-    if(array_dinamico==NULL){
-        printf("Erro na criação do array dinamico.\n");
+AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size) {
+    AD_WORDS_HOLDER ad_words_holder;
+    ad_words_holder.size = size;
+    ad_words_holder.count = 0;
+    ad_words_holder.pvalwordsholder = (VAL_AD_WORDS_HOLDER*)malloc(size * sizeof(VAL_AD_WORDS_HOLDER));
 
+    if (ad_words_holder.pvalwordsholder == NULL) {
+        printf("Erro na alocação de memória para ad_words_holder.pvalwordsholder.\n");
+        exit(EXIT_FAILURE);
     }
-    return array_dinamico;
+
+    return ad_words_holder;
 }
 
-char* resize_Dynamic_Array(char* array_dinamico, int resize)
-{
-    array_dinamico = (char*) realloc(array_dinamico, resize * sizeof(char));
-    return array_dinamico;
+//novo fill array
+AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size) {
+    ad_words_holder.pvalwordsholder = realloc(ad_words_holder.pvalwordsholder, new_size * sizeof(VAL_AD_WORDS_HOLDER));
+    ad_words_holder.size = new_size;
+    return ad_words_holder;
 }
 
-char* fillDynamicArray(char* array_dinamico, int lines, char dados[NUMROWS]) {
-    for (int i = 0; i < lines; i++) {
-        /*for (int j = 0; j <= cols; j++) {
-             *(*(matrix+i)+j) = *(*(dados+i)+j);
-         }*/
-        strcpy((array_dinamico + i), dados);
+// Função para inserir um elemento ordenadamente em AD_WORDS_HOLDER
+AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char* nova_data_modificacao) {
+    // Verificar se há espaço para mais elementos
+    if (ad_words_holder.count >= ad_words_holder.size) {
+        // Se não houver espaço suficiente, redimensionar o array
+        ad_words_holder = resize_AD_WORDS_HOLDER(ad_words_holder, ad_words_holder.size * 2);
     }
+
+    // Encontrar a posição correta para inserir o novo elemento
+    int posicao_insercao = 0;
+    while (posicao_insercao < ad_words_holder.count &&
+           strtol(nova_data_modificacao, NULL, 10) > ad_words_holder.pvalwordsholder[posicao_insercao].data) {
+        posicao_insercao++;
+    }
+
+    // Deslocar os elementos à direita para abrir espaço para o novo elemento
+    for (int i = ad_words_holder.count; i > posicao_insercao; i--) {
+        ad_words_holder.pvalwordsholder[i] = ad_words_holder.pvalwordsholder[i - 1];
+    }
+
+    // Inserir o novo elemento na posição correta
+    ad_words_holder.pvalwordsholder[posicao_insercao].data = strtol(nova_data_modificacao, NULL, 10);
+
+    // Incrementar o contador de elementos
+    ad_words_holder.count++;
+
+    return ad_words_holder;
 }
 
-char* printArray(char* array_dinamico, int size)
-{
-    for (int i = 0; i < size; ++i) {
-        printf("%s",array_dinamico+i);
-
+void printArray(AD_WORDS_HOLDER array_dinamico) {
+    for (int i = 0; i < array_dinamico.count; ++i) {
+        printf("%ld", array_dinamico.pvalwordsholder[i].data);
+        // Print other fields as needed
     }
-    return array_dinamico;
+    printf("\n");
 }
 
 void free_Dynamic_Matrix(char** matrix, int lines) {
@@ -106,10 +140,12 @@ void free_Dynamic_Matrix(char** matrix, int lines) {
 
 void fill_Matrix(char** matrix, int lines, int cols, char dados[][MAX_COLS_PALS]) {
     for (int i = 0; i < lines; i++) {
-        /*for (int j = 0; j <= cols; j++) {
-             *(*(matrix+i)+j) = *(*(dados+i)+j);
-         }*/
-        strcpy(*(matrix+i),dados[i]);
+        if (matrix[i] == NULL) {
+            printf("Erro: matriz[%d] não alocada corretamente.\n", i);
+            exit(EXIT_FAILURE);
+        }
+
+        strncpy(matrix[i], dados[i], cols);
     }
 }
 
@@ -136,7 +172,7 @@ void print_Matrix(char** matrix, int numRow, int numCollum) {
  * **/
 
 /** req 2 **/
-void decimal_to_binary(int value, char **matriz, int line, int column) {
+int decimal_to_binary(int value, char **matriz, int line, int column) {
     //  printf("TESTE-> valor em decimal fica %d\n", value);
     //array com os valores de binario
     // counter for binary array
@@ -159,42 +195,35 @@ void decimal_to_binary(int value, char **matriz, int line, int column) {
         charvalue = binaryNum[j]+'0';
         matriz[line][column] = charvalue;
     }
+    return column;
 }
-
 /** req 2 **/
-char** string_to_binary(char **matriz,int numpalavras) {
+char** string_to_binary(char** matriz, int numpalavras) {
+    char** DynamicMatrixCodes = create_Dynamic_Matrix(numpalavras, MAX_COLS_UFP6);
 
-    char **DynamicMatrixCodes = (char **) create_Dynamic_Matrix(numpalavras, MAX_COLS_UFP6);
-
-    /** a idea é pegar na string original
-     * tirar o size
-     * correr em loop e separar a string em diferentes char
-     * enviar esse char para a funçao decimal_to_binary
-     */
     for (int i = 0; i < numpalavras; i++) {
+        size_t size = strlen(matriz[i]);
 
-        size_t size = strlen(*(matriz + i));
-        printf("string_to_binary(): size=%d | %s \n",size,*(matriz+i));
+        DynamicMatrixCodes[i] = (char*)malloc((MAX_COLS_UFP6 + 1) * sizeof(char)); // +1 for the null terminator
+
         int g = 0;
         int value;
 
         for (int j = 0; j < size; j++) {
-
             value = matriz[i][j] - '0';
             if (isupper(matriz[i][j])) {
                 value = value + 19;
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else if (value <= 9) {
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             } else {
                 value = value - 39;
-                decimal_to_binary(value, DynamicMatrixCodes, i, g);
+                g = decimal_to_binary(value, DynamicMatrixCodes, i, g);
             }
-            g=g+size;
         }
-        ;
-        printf("\n");
+        DynamicMatrixCodes[i][g] = '\0';
     }
+
     return DynamicMatrixCodes;
 }
 
@@ -268,15 +297,16 @@ void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col) {
 }
 
 /** req 4 **/
-void check_segment(char **matrix,char **matrix2) {
-    int value = 1 ;
-    for(int i=0;i<=MAX_COLS_UFP6;i++) {
-        for (int j = 0; j <=MAX_COLS_PALS;j++){
+void check_segment(char **matrix,char **matrix2,int palavras1,int palavras2) {
+    int value;
+    for(int i=0;i<=palavras1;i++) {
+        for (int j = 0; j <=palavras2;j++){
             value = strcmp(*(matrix+i),*(matrix2+j));
             if(value == 0){
-                printf("%s %s são combinações iguais",*(matrix+i),*(matrix2+j));
-                value = 1;
+                printf("\n");
+                printf("%s %s sao combinacoes iguais\n",*(matrix+i),*(matrix2+j));
             }
+            ;
         }
     }
 }
@@ -425,11 +455,11 @@ int main_projeto(int argc, const char *argv[]) {
     int linhasC2 = 4;
     int colunasC2 = MAX_COLS_PALS;
 
-    char dadosC2[4][MAX_COLS_PALS] = {
-            {"b"},
-            {"MunDo"},
-            {"PL"},
-            {"11"}
+    char dadosC2[][MAX_COLS_PALS] = {
+            "b",
+            "MunDo",
+            "LP",
+            "aba"
     };
 
     char dadosarray[] = {1,2,3,4,5,6,7};
@@ -447,10 +477,10 @@ int main_projeto(int argc, const char *argv[]) {
     fill_Matrix(DynamicMatrixC2, linhasC2, colunasC2, dadosC2);
 
     //Criação do Array Dinamico
-    char* array_dinamico = create_Dynamic_Array(NUMROWS);
-    fillDynamicArray(array_dinamico, NUMROWS, dadosarray);
+    AD_WORDS_HOLDER array_dinamico = ARRDYN_WORDS_HOLDER(NUMROWS);
+    inserir_ordenado(array_dinamico, dadosarray);
 
-    printArray(array_dinamico,NUMROWS);
+    printArray(array_dinamico);
 
     /*Criação da matrix Matrix1
     char **Matrix1 = create_Dynamic_Matrix(linhasC1, colunasC1);
@@ -484,6 +514,7 @@ int main_projeto(int argc, const char *argv[]) {
      }*/
     // print_Matrix(Matrix1, linhasC1,colunasC1);
 
+    check_segment(DynamicMatrixC1,DynamicMatrixC2,6,3);
 
     print_Matrix(DynamicMatrixC1, linhasC1,colunasC1);
 
@@ -498,5 +529,30 @@ int main_projeto(int argc, const char *argv[]) {
      * free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
      */
     print_Matrix(DynamicMatrixCodesC1, linhasC1,colunasC1);
+
+    //free_Dynamic_Matrix(DynamicMatrixC1,linhasC1);
+    free_Dynamic_Matrix(DynamicMatrixCodesC1,linhasC1);
+    AD_WORDS_HOLDER ad_words_holder = ARRDYN_WORDS_HOLDER(10);
+    ad_words_holder.size = 10;
+    ad_words_holder.count = 0;
+    ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
+
+    // Insert elements in sorted order
+    ad_words_holder = inserir_ordenado(ad_words_holder, "10");
+    ad_words_holder = inserir_ordenado(ad_words_holder, "5");
+    ad_words_holder = inserir_ordenado(ad_words_holder, "8");
+
+    // Print the result
+    for (int i = 0; i < ad_words_holder.count; i++) {
+        printf("%ld\n", ad_words_holder.pvalwordsholder[i].data);
+    }
+
+    // os varios frees
+    free_Dynamic_Matrix(DynamicMatrixC1, linhasC1);
+    free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
+    //free_Dynamic_Matrix(DynamicMatrixCodesC1, linhasC1); ESTE FREE EM CONCRETO CAUSA SEGMENTATION FAULT
+    free(ad_words_holder.pvalwordsholder);
+
+
     return 0;
 }
