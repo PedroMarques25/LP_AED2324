@@ -28,6 +28,13 @@ typedef struct words_holder {
     SET set2;
 } WORDS_HOLDER;
 
+ /*typedef struct words_holder {
+    char words[100][50];
+    int codes[100];
+} WORDS_HOLDER;*/
+
+
+
 typedef struct val_ad_words_holder {
     WORDS_HOLDER wordsHolder;
     long data;
