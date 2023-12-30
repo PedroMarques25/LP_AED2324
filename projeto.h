@@ -19,8 +19,8 @@ typedef struct dynamicmatrix {
 } DYNAMICMATRIX;
 
 typedef struct set {
-    DYNAMICMATRIX DynamicMatrixPals;
-    DYNAMICMATRIX DynamicMatrixCodes;
+    DYNAMICMATRIX *DynamicMatrixPals;
+    DYNAMICMATRIX *DynamicMatrixCodes;
 } SET;
 
 typedef struct words_holder {
