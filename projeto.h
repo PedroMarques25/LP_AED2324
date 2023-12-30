@@ -19,13 +19,13 @@ typedef struct dynamicmatrix {
 } DYNAMICMATRIX;
 
 typedef struct set {
-    DYNAMICMATRIX DynamicMatrixPals;
-    DYNAMICMATRIX DynamicMatrixCodes;
+    DYNAMICMATRIX *DynamicMatrixPals;
+    DYNAMICMATRIX *DynamicMatrixCodes;
 } SET;
 
 typedef struct words_holder {
-    char words[100][50];
-    int codes[100];
+    SET set1;
+    SET set2;
 } WORDS_HOLDER;
 
 typedef struct val_ad_words_holder {

@@ -218,6 +218,19 @@ void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
     list->count--;
 }
 
+DYNAMICMATRIX* pesquisar_palavra(LL_WORDS_HOLDER *list, const char *palavra,const char *code) {
+    for (int i = 0; i < list->count; i++) {
+        // Realizar a pesquisa apenas nos elementos desejados (ajuste conforme necessário)
+        if (strcmp((const char *) list->head->data.set1.DynamicMatrixPals->data, palavra) == 0 ||
+            (strcmp((const char *) list->head->data.set1.DynamicMatrixCodes->data, code)== 0)) {
+            // Palavra encontrada, retornar o código UFP6 ou índice do elemento
+            return list->head->data.set1.DynamicMatrixPals;
+        }
+    }
+
+    return NULL;
+}
+
 void printArray(AD_WORDS_HOLDER array_dinamico) {
     for (int i = 0; i < array_dinamico.count; ++i) {
         printf("%ld", array_dinamico.pvalwordsholder[i].data);
@@ -401,7 +414,6 @@ void check_segment(char **matrix,char **matrix2,int palavras1,int palavras2) {
                 printf("\n");
                 printf("%s %s sao combinacoes iguais\n",*(matrix+i),*(matrix2+j));
             }
-            ;
         }
     }
 }
@@ -649,32 +661,32 @@ int main_projeto(int argc, const char *argv[]) {
     free(ad_words_holder.pvalwordsholder);
 
 
-    LL_WORDS_HOLDER wordList;
-    wordList.head = NULL;
-    wordList.count = 0;
+  //  LL_WORDS_HOLDER wordList;
+   // wordList.head = NULL;
+  //  wordList.count = 0;
 
-    WORDS_HOLDER data1;
+   // WORDS_HOLDER data1;
 
-    strcpy(data1.words[0], "Apple");
-    data1.codes[0] = 101;
+  //  strcpy(data1..set1.[0], "Apple");
+   // data1.codes[0] = 101;
 
-    strcpy(data1.words[1], "Banana");
-    data1.codes[1] = 102;
+   // strcpy(data1.words[1], "Banana");
+   // data1.codes[1] = 102;
 
-    strcpy(data1.words[2], "Cherry");
-    data1.codes[2] = 103;
+   // strcpy(data1.words[2], "Cherry");
+   // data1.codes[2] = 103;
 
 
-    for (int i = 0; i < 3; i++) {
-        printf("Word: %s, Code: %d\n", data1.words[i], data1.codes[i]);
-    }
+  //  for (int i = 0; i < 3; i++) {
+  //      printf("Word: %s, Code: %d\n", data1.words[i], data1.codes[i]);
+  //  }
 
-    char update1[] = "2023-01-01";
-    insertNode(&wordList, data1, update1);
+  //  char update1[] = "2023-01-01";
+ //   insertNode(&wordList, data1, update1);
 
-    for (int i = 0; i < 3; i++) {
-        printf("Word: %s, Code: %d\n", wordList.head->data.words[i], wordList.head->data.codes[i]);
-    }
+  //  for (int i = 0; i < 3; i++) {
+  //      printf("Word: %s, Code: %d,%s\n", wordList.head->data.words[i], wordList.head->data.codes[i],wordList.head->lastUpdate);
+    //}
 
 
 
