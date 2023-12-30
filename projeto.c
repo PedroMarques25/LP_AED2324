@@ -649,5 +649,34 @@ int main_projeto(int argc, const char *argv[]) {
     free(ad_words_holder.pvalwordsholder);
 
 
+    LL_WORDS_HOLDER wordList;
+    wordList.head = NULL;
+    wordList.count = 0;
+
+    WORDS_HOLDER data1;
+
+    strcpy(data1.words[0], "Apple");
+    data1.codes[0] = 101;
+
+    strcpy(data1.words[1], "Banana");
+    data1.codes[1] = 102;
+
+    strcpy(data1.words[2], "Cherry");
+    data1.codes[2] = 103;
+
+
+    for (int i = 0; i < 3; i++) {
+        printf("Word: %s, Code: %d\n", data1.words[i], data1.codes[i]);
+    }
+
+    char update1[] = "2023-01-01";
+    insertNode(&wordList, data1, update1);
+
+    for (int i = 0; i < 3; i++) {
+        printf("Word: %s, Code: %d\n", wordList.head->data.words[i], wordList.head->data.codes[i]);
+    }
+
+
+
     return 0;
 }

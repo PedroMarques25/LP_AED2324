@@ -24,8 +24,8 @@ typedef struct set {
 } SET;
 
 typedef struct words_holder {
-    SET set1;
-    SET set2;
+    char words[100][50];
+    int codes[100];
 } WORDS_HOLDER;
 
 typedef struct val_ad_words_holder {
