@@ -56,7 +56,7 @@ char * UFP6[] = { //UFP6 CORRIGIDO
 
 
 char** create_Dynamic_Matrix(int lines, int cols) {
-    char** matrix = (char**)calloc(lines, sizeof(char*));
+    char** matrix = (char**)calloc(lines * sizeof(char*), sizeof(char*));
     if (matrix == NULL) {
         printf("Erro na alocação de memória para linhas.\n");
         exit(EXIT_FAILURE);
@@ -445,19 +445,6 @@ AD_WORDS_HOLDER eliminar_elemento(AD_WORDS_HOLDER ad_words_holder, int posicao) 
     return ad_words_holder;
 }
 
-int pesquisar_palavra(AD_WORDS_HOLDER ad_words_holder, const char *palavra) {
-    // Supondo que desejamos pesquisar em todos os elementos
-    for (int i = 0; i < ad_words_holder.count; i++) {
-        if (strcmp((const char *) ad_words_holder.pvalwordsholder[i].wordsHolder.set1.DynamicMatrixPals, palavra) == 0) {
-            // Palavra encontrada, retornar o código UFP6 associado a ela
-            return ad_words_holder.pvalwordsholder[i].data;
-        }
-    }
-
-    // Palavra não encontrada
-    return -1;
-}
-
 void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
     NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
     newNode->data = data;
@@ -574,7 +561,92 @@ void printArray(AD_WORDS_HOLDER array_dinamico) {
     printf("\n");
 }
 
+void write_to_file(const char *filename, AD_WORDS_HOLDER ad_words_holder) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file for writing: %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
 
+    for (int i = 0; i < ad_words_holder.count; i++) {
+        fprintf(file, "%s %ld\n", ad_words_holder.pvalwordsholder[i].wordsHolder.set1.DynamicMatrixPals->data[0], ad_words_holder.pvalwordsholder[i].data);
+    }
+
+    fclose(file);
+}
+
+AD_WORDS_HOLDER read_from_file(const char *filename) {
+    AD_WORDS_HOLDER ad_words_holder;
+
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error opening file for reading: %s\n", filename);
+        exit(EXIT_FAILURE);
+    }
+
+    // Assuming a maximum line length of 100 characters
+    char line[100];
+
+    // Count the number of lines in the file
+    int count = 0;
+    while (fgets(line, sizeof(line), file) != NULL) {
+        count++;
+    }
+
+    // Allocate memory based on the number of lines
+    ad_words_holder.size = count;
+    ad_words_holder.count = 0; // Initialize count to 0, it will be incremented while reading
+    ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
+
+    // Reset the file pointer to the beginning of the file
+    fseek(file, 0, SEEK_SET);
+
+    // Read data from the file
+    while (fgets(line, sizeof(line), file) != NULL) {
+        // Assuming each line contains a word and its associated code
+        sscanf(line, "%s %ld", ad_words_holder.pvalwordsholder[ad_words_holder.count].wordsHolder.set1.DynamicMatrixPals->data[0], &ad_words_holder.pvalwordsholder[ad_words_holder.count].data);
+
+        // Increment count
+        ad_words_holder.count++;
+    }
+
+    fclose(file);
+
+    return ad_words_holder;
+}
+
+// Function to write AD_WORDS_HOLDER structure to a binary file
+void writeToFileBinary(const char *filename, AD_WORDS_HOLDER ad_words_holder) {
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        perror("Error opening file for writing");
+        exit(EXIT_FAILURE);
+    }
+
+    // Write the entire structure to the file
+    fwrite(&ad_words_holder, sizeof(AD_WORDS_HOLDER), 1, file);
+
+    fclose(file);
+}
+
+
+// Function to read AD_WORDS_HOLDER structure from a binary file
+AD_WORDS_HOLDER readFromFileBinary(const char *filename) {
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        perror("Error opening file for reading");
+        exit(EXIT_FAILURE);
+    }
+
+    AD_WORDS_HOLDER ad_words_holder;
+
+    // Read the entire structure from the file
+    fread(&ad_words_holder, sizeof(AD_WORDS_HOLDER), 1, file);
+
+    fclose(file);
+
+    return ad_words_holder;
+}
 
 int main_projeto(int argc, const char *argv[]) {
 
@@ -674,10 +746,13 @@ int main_projeto(int argc, const char *argv[]) {
 
     //free_Dynamic_Matrix(DynamicMatrixC1,linhasC1);
     free_Dynamic_Matrix(DynamicMatrixCodesC1,linhasC1);
+
     AD_WORDS_HOLDER ad_words_holder = ARRDYN_WORDS_HOLDER(10);
     ad_words_holder.size = 10;
-    ad_words_holder.count = 0;
-    ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
+    ad_words_holder.count = 3;
+    //ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
+    ad_words_holder.pvalwordsholder = malloc(sizeof(VAL_AD_WORDS_HOLDER) * ad_words_holder.size);
+
 
     // Insert elements in sorted order
     ad_words_holder = inserir_ordenado(ad_words_holder, "10");
@@ -686,25 +761,6 @@ int main_projeto(int argc, const char *argv[]) {
 
     int posicao_para_eliminar = 2;
     ad_words_holder = eliminar_elemento(ad_words_holder, posicao_para_eliminar);
-
-    // Inicializar alguns elementos fictícios para o exemplo
-    ad_words_holder.pvalwordsholder[0].data = 123;
-    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo1");
-
-    ad_words_holder.pvalwordsholder[1].data = 456;
-    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo2");
-
-    ad_words_holder.pvalwordsholder[2].data = 789;
-    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo3");
-
-    const char *palavra_a_pesquisar = "exemplo2";
-    int resultado_pesquisa = pesquisar_palavra(ad_words_holder, palavra_a_pesquisar);
-
-    if (resultado_pesquisa != -1) {
-        printf("A palavra \"%s\" foi encontrada com o código UFP6: %d\n", palavra_a_pesquisar, resultado_pesquisa);
-    } else {
-        printf("A palavra \"%s\" não foi encontrada.\n", palavra_a_pesquisar);
-    }
 
     // Print the result
     for (int i = 0; i < ad_words_holder.count; i++) {
@@ -715,7 +771,12 @@ int main_projeto(int argc, const char *argv[]) {
     free_Dynamic_Matrix(DynamicMatrixC1, linhasC1);
     free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
     //free_Dynamic_Matrix(DynamicMatrixCodesC1, linhasC1); ESTE FREE EM CONCRETO CAUSA SEGMENTATION FAULT
+
+
+    write_to_file("output",ad_words_holder);
+    read_from_file("output");
     free(ad_words_holder.pvalwordsholder);
+
 
 
     //  LL_WORDS_HOLDER wordList;
