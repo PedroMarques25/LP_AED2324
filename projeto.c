@@ -73,159 +73,6 @@ char** create_Dynamic_Matrix(int lines, int cols) {
     return matrix;
 }
 
-AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size) {
-    AD_WORDS_HOLDER ad_words_holder;
-    ad_words_holder.size = size;
-    ad_words_holder.count = 0;
-    ad_words_holder.pvalwordsholder = (VAL_AD_WORDS_HOLDER*)malloc(size * sizeof(VAL_AD_WORDS_HOLDER));
-
-    if (ad_words_holder.pvalwordsholder == NULL) {
-        printf("Erro na alocação de memória para ad_words_holder.pvalwordsholder.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    return ad_words_holder;
-}
-
-//novo fill array
-AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size) {
-    ad_words_holder.pvalwordsholder = realloc(ad_words_holder.pvalwordsholder, new_size * sizeof(VAL_AD_WORDS_HOLDER));
-    ad_words_holder.size = new_size;
-    return ad_words_holder;
-}
-
-// Função para inserir um elemento ordenadamente em AD_WORDS_HOLDER
-AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char* nova_data_modificacao) {
-    // Verificar se há espaço para mais elementos
-    if (ad_words_holder.count >= ad_words_holder.size) {
-        // Se não houver espaço suficiente, redimensionar o array
-        ad_words_holder = resize_AD_WORDS_HOLDER(ad_words_holder, ad_words_holder.size * 2);
-    }
-
-    // Encontrar a posição correta para inserir o novo elemento
-    int posicao_insercao = 0;
-    while (posicao_insercao < ad_words_holder.count &&
-           strtol(nova_data_modificacao, NULL, 10) > ad_words_holder.pvalwordsholder[posicao_insercao].data) {
-        posicao_insercao++;
-    }
-
-    // Deslocar os elementos à direita para abrir espaço para o novo elemento
-    for (int i = ad_words_holder.count; i > posicao_insercao; i--) {
-        ad_words_holder.pvalwordsholder[i] = ad_words_holder.pvalwordsholder[i - 1];
-    }
-
-    // Inserir o novo elemento na posição correta
-    ad_words_holder.pvalwordsholder[posicao_insercao].data = strtol(nova_data_modificacao, NULL, 10);
-
-    // Incrementar o contador de elementos
-    ad_words_holder.count++;
-
-    return ad_words_holder;
-}
-
-void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
-    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
-    newNode->data = data;
-    strcpy(newNode->lastUpdate, lastUpdate);
-    newNode->next = NULL;
-    newNode->prev = NULL;
-
-    if (list->head == NULL) {
-        list->head = newNode;
-    } else {
-        NODE_LL_WORDS_HOLDER *current = list->head;
-        while (current->next != NULL && strcmp(lastUpdate, current->lastUpdate) > 0) {
-            current = current->next;
-        }
-
-        if (strcmp(lastUpdate, current->lastUpdate) > 0) {
-            newNode->prev = current;
-            current->next = newNode;
-        } else {
-            newNode->next = current;
-            newNode->prev = current->prev;
-            if (current->prev != NULL) {
-                current->prev->next = newNode;
-            } else {
-                list->head = newNode;
-            }
-            current->prev = newNode;
-        }
-    }
-    list->count++;
-}
-
-void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[], int index) {
-    if (index < 0 || index > list->count) {
-        printf("Índice inválido para inserção.\n");
-        return;
-    }
-    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
-    newNode->data = data;
-    strcpy(newNode->lastUpdate, lastUpdate);
-    newNode->next = NULL;
-    newNode->prev = NULL;
-
-    if (index == 0) {
-        newNode->next = list->head;
-        if (list->head != NULL) {
-            list->head->prev = newNode;
-        }
-        list->head = newNode;
-    } else {
-        NODE_LL_WORDS_HOLDER *current = list->head;
-        for (int i = 0; i < index - 1; i++) {
-            current = current->next;
-        }
-        newNode->next = current->next;
-        newNode->prev = current;
-        if (current->next != NULL) {
-            current->next->prev = newNode;
-        }
-        current->next = newNode;
-    }
-
-    list->count++;
-}
-
-
-void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
-    if (index < 0 || index >= list->count) {
-        printf("Índice inválido para exclusão.\n");
-        return;
-    }
-
-    NODE_LL_WORDS_HOLDER *current = list->head;
-
-    if (index == 0) {
-
-        list->head = current->next;
-        if (list->head != NULL) {
-            list->head->prev = NULL;
-        }
-    } else {
-
-        for (int i = 0; i < index; i++) {
-            current = current->next;
-        }
-        current->prev->next = current->next;
-        if (current->next != NULL) {
-            current->next->prev = current->prev;
-        }
-    }
-
-    free(current);
-    list->count--;
-}
-
-void printArray(AD_WORDS_HOLDER array_dinamico) {
-    for (int i = 0; i < array_dinamico.count; ++i) {
-        printf("%ld", array_dinamico.pvalwordsholder[i].data);
-        // Print other fields as needed
-    }
-    printf("\n");
-}
-
 void free_Dynamic_Matrix(char** matrix, int lines) {
     for (int i = 0; i < lines; i++) {
         free(matrix[i]);
@@ -401,7 +248,6 @@ void check_segment(char **matrix,char **matrix2,int palavras1,int palavras2) {
                 printf("\n");
                 printf("%s %s sao combinacoes iguais\n",*(matrix+i),*(matrix2+j));
             }
-            ;
         }
     }
 }
@@ -526,6 +372,207 @@ void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, in
 
 }
 
+AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size) {
+    AD_WORDS_HOLDER ad_words_holder;
+    ad_words_holder.size = size;
+    ad_words_holder.count = 0;
+    ad_words_holder.pvalwordsholder = (VAL_AD_WORDS_HOLDER*)malloc(size * sizeof(VAL_AD_WORDS_HOLDER));
+
+    if (ad_words_holder.pvalwordsholder == NULL) {
+        printf("Erro na alocação de memória para ad_words_holder.pvalwordsholder.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return ad_words_holder;
+}
+
+//novo fill array
+AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size) {
+    ad_words_holder.pvalwordsholder = realloc(ad_words_holder.pvalwordsholder, new_size * sizeof(VAL_AD_WORDS_HOLDER));
+    ad_words_holder.size = new_size;
+    return ad_words_holder;
+}
+
+// Função para inserir um elemento ordenadamente em AD_WORDS_HOLDER
+AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char* nova_data_modificacao) {
+    // Verificar se há espaço para mais elementos
+    if (ad_words_holder.count >= ad_words_holder.size) {
+        // Se não houver espaço suficiente, redimensionar o array
+        ad_words_holder = resize_AD_WORDS_HOLDER(ad_words_holder, ad_words_holder.size * 2);
+    }
+
+    // Encontrar a posição correta para inserir o novo elemento
+    int posicao_insercao = 0;
+    while (posicao_insercao < ad_words_holder.count &&
+           strtol(nova_data_modificacao, NULL, 10) > ad_words_holder.pvalwordsholder[posicao_insercao].data) {
+        posicao_insercao++;
+    }
+
+    // Deslocar os elementos à direita para abrir espaço para o novo elemento
+    for (int i = ad_words_holder.count; i > posicao_insercao; i--) {
+        ad_words_holder.pvalwordsholder[i] = ad_words_holder.pvalwordsholder[i - 1];
+    }
+
+    // Inserir o novo elemento na posição correta
+    ad_words_holder.pvalwordsholder[posicao_insercao].data = strtol(nova_data_modificacao, NULL, 10);
+
+    // Incrementar o contador de elementos
+    ad_words_holder.count++;
+
+    return ad_words_holder;
+}
+
+AD_WORDS_HOLDER eliminar_elemento(AD_WORDS_HOLDER ad_words_holder, int posicao) {
+    // Verificar se a posição é válida
+    if (posicao < 0 || posicao >= ad_words_holder.count) {
+        printf("Posicao invalida\n");
+        return ad_words_holder;  // Retornar sem modificar se a posição for inválida
+    }
+
+    // Deslocar os elementos à esquerda para preencher a posição do elemento removido
+    for (int i = posicao; i < ad_words_holder.count - 1; i++) {
+        ad_words_holder.pvalwordsholder[i] = ad_words_holder.pvalwordsholder[i + 1];
+    }
+
+    // Decrementar o contador de elementos
+    ad_words_holder.count--;
+
+    // Verificar se é necessário redimensionar o array (por exemplo, se a contagem estiver muito abaixo do tamanho)
+    if (ad_words_holder.count < ad_words_holder.size / 2) {
+        ad_words_holder = resize_AD_WORDS_HOLDER(ad_words_holder, ad_words_holder.size / 2);
+    }
+
+    return ad_words_holder;
+}
+
+int pesquisar_palavra(AD_WORDS_HOLDER ad_words_holder, const char *palavra) {
+    // Supondo que desejamos pesquisar em todos os elementos
+    for (int i = 0; i < ad_words_holder.count; i++) {
+        if (strcmp((const char *) ad_words_holder.pvalwordsholder[i].wordsHolder.set1.DynamicMatrixPals, palavra) == 0) {
+            // Palavra encontrada, retornar o código UFP6 associado a ela
+            return ad_words_holder.pvalwordsholder[i].data;
+        }
+    }
+
+    // Palavra não encontrada
+    return -1;
+}
+
+void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
+    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
+    newNode->data = data;
+    strcpy(newNode->lastUpdate, lastUpdate);
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (list->head == NULL) {
+        list->head = newNode;
+    } else {
+        NODE_LL_WORDS_HOLDER *current = list->head;
+        while (current->next != NULL && strcmp(lastUpdate, current->lastUpdate) > 0) {
+            current = current->next;
+        }
+
+        if (strcmp(lastUpdate, current->lastUpdate) > 0) {
+            newNode->prev = current;
+            current->next = newNode;
+        } else {
+            newNode->next = current;
+            newNode->prev = current->prev;
+            if (current->prev != NULL) {
+                current->prev->next = newNode;
+            } else {
+                list->head = newNode;
+            }
+            current->prev = newNode;
+        }
+    }
+    list->count++;
+}
+
+void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[], int index) {
+    if (index < 0 || index > list->count) {
+        printf("Índice inválido para inserção.\n");
+        return;
+    }
+    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
+    newNode->data = data;
+    strcpy(newNode->lastUpdate, lastUpdate);
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (index == 0) {
+        newNode->next = list->head;
+        if (list->head != NULL) {
+            list->head->prev = newNode;
+        }
+        list->head = newNode;
+    } else {
+        NODE_LL_WORDS_HOLDER *current = list->head;
+        for (int i = 0; i < index - 1; i++) {
+            current = current->next;
+        }
+        newNode->next = current->next;
+        newNode->prev = current;
+        if (current->next != NULL) {
+            current->next->prev = newNode;
+        }
+        current->next = newNode;
+    }
+
+    list->count++;
+}
+
+
+void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
+    if (index < 0 || index >= list->count) {
+        printf("Índice inválido para exclusão.\n");
+        return;
+    }
+
+    NODE_LL_WORDS_HOLDER *current = list->head;
+
+    if (index == 0) {
+
+        list->head = current->next;
+        if (list->head != NULL) {
+            list->head->prev = NULL;
+        }
+    } else {
+
+        for (int i = 0; i < index; i++) {
+            current = current->next;
+        }
+        current->prev->next = current->next;
+        if (current->next != NULL) {
+            current->next->prev = current->prev;
+        }
+    }
+
+    free(current);
+    list->count--;
+}
+
+DYNAMICMATRIX* pesquisar_palavra_ll(LL_WORDS_HOLDER *list, const char *palavra,const char *code) {
+    for (int i = 0; i < list->count; i++) {
+        // Realizar a pesquisa apenas nos elementos desejados (ajuste conforme necessário)
+        if (strcmp((const char *) list->head->data.set1.DynamicMatrixPals->data, palavra) == 0 ||
+            (strcmp((const char *) list->head->data.set1.DynamicMatrixCodes->data, code)== 0)) {
+            // Palavra encontrada, retornar o código UFP6 ou índice do elemento
+            return list->head->data.set1.DynamicMatrixPals;
+        }
+    }
+
+    return NULL;
+}
+
+void printArray(AD_WORDS_HOLDER array_dinamico) {
+    for (int i = 0; i < array_dinamico.count; ++i) {
+        printf("%ld", array_dinamico.pvalwordsholder[i].data);
+        // Print other fields as needed
+    }
+    printf("\n");
+}
 
 
 
@@ -637,6 +684,28 @@ int main_projeto(int argc, const char *argv[]) {
     ad_words_holder = inserir_ordenado(ad_words_holder, "5");
     ad_words_holder = inserir_ordenado(ad_words_holder, "8");
 
+    int posicao_para_eliminar = 2;
+    ad_words_holder = eliminar_elemento(ad_words_holder, posicao_para_eliminar);
+
+    // Inicializar alguns elementos fictícios para o exemplo
+    ad_words_holder.pvalwordsholder[0].data = 123;
+    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo1");
+
+    ad_words_holder.pvalwordsholder[1].data = 456;
+    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo2");
+
+    ad_words_holder.pvalwordsholder[2].data = 789;
+    strcpy((char *) ad_words_holder.pvalwordsholder[0].wordsHolder.set1.DynamicMatrixPals, "exemplo3");
+
+    const char *palavra_a_pesquisar = "exemplo2";
+    int resultado_pesquisa = pesquisar_palavra(ad_words_holder, palavra_a_pesquisar);
+
+    if (resultado_pesquisa != -1) {
+        printf("A palavra \"%s\" foi encontrada com o código UFP6: %d\n", palavra_a_pesquisar, resultado_pesquisa);
+    } else {
+        printf("A palavra \"%s\" não foi encontrada.\n", palavra_a_pesquisar);
+    }
+
     // Print the result
     for (int i = 0; i < ad_words_holder.count; i++) {
         printf("%ld\n", ad_words_holder.pvalwordsholder[i].data);
@@ -647,6 +716,35 @@ int main_projeto(int argc, const char *argv[]) {
     free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
     //free_Dynamic_Matrix(DynamicMatrixCodesC1, linhasC1); ESTE FREE EM CONCRETO CAUSA SEGMENTATION FAULT
     free(ad_words_holder.pvalwordsholder);
+
+
+    //  LL_WORDS_HOLDER wordList;
+    // wordList.head = NULL;
+    //  wordList.count = 0;
+
+    // WORDS_HOLDER data1;
+
+    //  strcpy(data1..set1.[0], "Apple");
+    // data1.codes[0] = 101;
+
+    // strcpy(data1.words[1], "Banana");
+    // data1.codes[1] = 102;
+
+    // strcpy(data1.words[2], "Cherry");
+    // data1.codes[2] = 103;
+
+
+    //  for (int i = 0; i < 3; i++) {
+    //      printf("Word: %s, Code: %d\n", data1.words[i], data1.codes[i]);
+    //  }
+
+    //  char update1[] = "2023-01-01";
+    //   insertNode(&wordList, data1, update1);
+
+    //  for (int i = 0; i < 3; i++) {
+    //      printf("Word: %s, Code: %d,%s\n", wordList.head->data.words[i], wordList.head->data.codes[i],wordList.head->lastUpdate);
+    //}
+
 
 
     return 0;
