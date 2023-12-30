@@ -123,6 +123,101 @@ AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char* nova_dat
     return ad_words_holder;
 }
 
+void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
+    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
+    newNode->data = data;
+    strcpy(newNode->lastUpdate, lastUpdate);
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (list->head == NULL) {
+        list->head = newNode;
+    } else {
+        NODE_LL_WORDS_HOLDER *current = list->head;
+        while (current->next != NULL && strcmp(lastUpdate, current->lastUpdate) > 0) {
+            current = current->next;
+        }
+
+        if (strcmp(lastUpdate, current->lastUpdate) > 0) {
+            newNode->prev = current;
+            current->next = newNode;
+        } else {
+            newNode->next = current;
+            newNode->prev = current->prev;
+            if (current->prev != NULL) {
+                current->prev->next = newNode;
+            } else {
+                list->head = newNode;
+            }
+            current->prev = newNode;
+        }
+    }
+    list->count++;
+}
+
+void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[], int index) {
+    if (index < 0 || index > list->count) {
+        printf("Índice inválido para inserção.\n");
+        return;
+    }
+    NODE_LL_WORDS_HOLDER *newNode = (NODE_LL_WORDS_HOLDER *)malloc(sizeof(NODE_LL_WORDS_HOLDER));
+    newNode->data = data;
+    strcpy(newNode->lastUpdate, lastUpdate);
+    newNode->next = NULL;
+    newNode->prev = NULL;
+
+    if (index == 0) {
+        newNode->next = list->head;
+        if (list->head != NULL) {
+            list->head->prev = newNode;
+        }
+        list->head = newNode;
+    } else {
+        NODE_LL_WORDS_HOLDER *current = list->head;
+        for (int i = 0; i < index - 1; i++) {
+            current = current->next;
+        }
+        newNode->next = current->next;
+        newNode->prev = current;
+        if (current->next != NULL) {
+            current->next->prev = newNode;
+        }
+        current->next = newNode;
+    }
+
+    list->count++;
+}
+
+
+void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
+    if (index < 0 || index >= list->count) {
+        printf("Índice inválido para exclusão.\n");
+        return;
+    }
+
+    NODE_LL_WORDS_HOLDER *current = list->head;
+
+    if (index == 0) {
+
+        list->head = current->next;
+        if (list->head != NULL) {
+            list->head->prev = NULL;
+        }
+    } else {
+
+        for (int i = 0; i < index; i++) {
+            current = current->next;
+        }
+        current->prev->next = current->next;
+        if (current->next != NULL) {
+            current->next->prev = current->prev;
+        }
+    }
+
+    free(current);
+    list->count--;
+}
+
 void printArray(AD_WORDS_HOLDER array_dinamico) {
     for (int i = 0; i < array_dinamico.count; ++i) {
         printf("%ld", array_dinamico.pvalwordsholder[i].data);
