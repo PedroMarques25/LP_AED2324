@@ -40,16 +40,17 @@ typedef struct ad_words_holder {
 } AD_WORDS_HOLDER;
 
 typedef struct Node_Ll_Words_Holder {
-    WORDS_HOLDER Wordsholder;
-    int date;
-    struct Node_Ll_Words_Holder *pToNext;
-    struct Node_Ll_Words_Holder *pToPrevious;
+    WORDS_HOLDER data;
+    char lastUpdate[20];
+    struct Node_Ll_Words_Holder *next;
+    struct Node_Ll_Words_Holder *prev;
 } NODE_LL_WORDS_HOLDER;
 
 typedef struct Ll_Words_Holder {
-    struct Node_Ll_Words_Holder *pToHead;
-    struct Node_Ll_Words_Holder *pToTail;
+    struct Node_Ll_Words_Holder *head;
+    int count;
 } LL_WORDS_HOLDER;
+
 
 /**********************************************************************************************************************/
 /**********************************************************************************************************************/
