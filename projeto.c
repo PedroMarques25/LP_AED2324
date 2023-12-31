@@ -253,14 +253,18 @@ void check_segment(char **matrix,char **matrix2,int palavras1,int palavras2) {
 }
 
 /** req 5 **/
-void seach_string(const char *sequencia, const char *palavra[], int numPalavras) {
-
-    for (int i = 0; i < numPalavras; i++) {
+char** seach_string_word(char *sequencia,  char **matrix, int numWords) {
+    char **ufp6 = create_Dynamic_Matrix(numWords, MAX_COLS_UFP6);
+    int j=0;
+    for (int i = 0; i < numWords; i++) {
         //Verifica se a sequência de pesquisa ocorre na palavra
-        if (strstr(palavra[i], sequencia) != NULL) {
-            printf("%s\n", palavra[i]);
+        if (strstr(matrix[i], sequencia) != NULL) {
+            printf("%s\n", matrix[i]);
+            ufp6[j]=matrix[i];
+            j++;
         }
     }
+    return ufp6;
 }
 
 /** req 6 **/
@@ -710,6 +714,13 @@ int main_projeto(int argc, const char *argv[]) {
      *  print_Matrix(DynamicMatrixC2, linhasC2, colunasC2);
      *
      */
+
+    char **ufp6 = seach_string_word("la",DynamicMatrixC1,linhasC1);
+
+    char ** ufp26 = string_to_binary(ufp6,1);
+
+
+
 
 
 

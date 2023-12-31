@@ -81,7 +81,7 @@ void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col);
 
 void check_segment(char **matrix, char **matrix2, int palavras1, int palavras2);
 
-void seach_string(const char *sequence, const char *words[], int numWords);
+char** seach_string_word( char *sequence,  char **words, int numWords);
 
 void sort_crescent(int *vetor, int tamanho);
 
