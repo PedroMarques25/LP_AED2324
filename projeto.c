@@ -1,37 +1,10 @@
 /**
     * ==================================================================================================================
-    * PROJETO REALIZADO POR:                                                                                           *
+    *   PROJETO REALIZADO POR:                                                                                         *
     * - PEDRO MARQUES - 38688                                                                                          *
-    * - PEDRO MONTEIRO  - 2022110782                                                                                             *
-    * - DIONE ARANTES - 40395                                                                                             *
+    * - PEDRO MONTEIRO  - 2022110782                                                                                   *
     * ==================================================================================================================
-    * @todo
-    * 2
-    * funcao que converte decimal para binario
-    * funcao que converte string ou char para binario
-    *
-    * 3
-    * funcao de inserir e remover para uma matriz, e o respestivo binario
-    *
-    * 4
-    * correr ambos as matrizes e verificar combinacoes iguais
-    *
-    * 5
-    * passar como argumento a string de pesquisa, corres as matrizes e ves
-    * onde se enquadra o segmento em cada parcela da matriz
-    * dar print dessa palavra e posicao e versao binaria
-    * (passar por argumento para a que converte para binario)
-    *
-    * 6
-    * Ordenar por ordem crescente ou decrescente
-    * crescente encontrar o minimo e passar esse para a ultima posicao
-    * descrescente encontrar o maximo e passar esse para a primeira posicao
-    *
-    * 7
-    * criar uma struct que deia para passar ambas as matrizes
-    *
-    **/
-
+ **/
 
 #include "stdio.h"
 #include "stdlib.h"
@@ -46,10 +19,10 @@
 #define NUMCOLS 7
 
 DYNAMICMATRIX DynamicMatrix;
-VAL_AD_WORDS_HOLDER val_Ad_Words_Holder;
+void *val_Ad_Words_Holder;
 NODE_LL_WORDS_HOLDER Node_Ll_Words_Holder;
 
-char * UFP6[] = { //UFP6 CORRIGIDO
+char * UFP6[] = { //Código UFP6
         // 0          1           2         3         4           5          6           7          8           9           a              b           c            d            e            f            g            h              i            j              k             l             m            n             o             p             q              r            s             t             u             v              w             x                y             z              A             B              C               D             E               F             G               H              I              J             K               L              M            N               O                P              Q              R             S               T               U               V              W            X               Y             Z
         "0",  "1",  "10", "11",  "100", "101", "110", "111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111", "10000", "10001", "10010", "10011", "10100", "10101", "10110", "10111", "11000", "11001", "11010", "11011", "11100", "11101", "11110", "11111", "100000", "100001", "100010", "100011", "100100", "100101", "100110", "100111", "101000", "101001", "101010", "101011", "101100", "101101", "101110", "101111", "110000", "110001", "110010", "110011", "110100", "110101", "110110", "110111", "111000", "111001", "111010", "111011", "111100", "111101",
 };
@@ -101,19 +74,8 @@ void print_Matrix(char** matrix, int numRow, int numCollum) {
     }
 }
 
+/**requisito 2 **/
 
-/**requisito 2
- *
- * a codificação tem que ser feito perante  UFP6
- * temos que criar uma funcao para criar a matriz vazia
- * funcao para adicionar os valores na matriz
- * a codificacao tem que ser feita pertante ufp6, em vez de usar acii temos que passar por UFP6[]
- * passar como argumento o array UFP6 para depois comparar o valor que temos com esse
- *
- *
- * **/
-
-/** req 2 **/
 int decimal_to_binary(int value, char **matriz, int line, int column) {
     //  printf("TESTE-> valor em decimal fica %d\n", value);
     //array com os valores de binario
@@ -126,12 +88,12 @@ int decimal_to_binary(int value, char **matriz, int line, int column) {
     int binaryNum[8];
 
     while (value > 0) {
-        // storing remainder in binary array
+
         binaryNum[h] = value % 2;
         value = value / 2;
         h++;
     }
-    // printing binary array in reverse order
+
     for (int j = h - 1; j >= 0; j--, column++) {
         printf("%d", binaryNum[j]);
         charvalue = binaryNum[j]+'0';
@@ -139,7 +101,8 @@ int decimal_to_binary(int value, char **matriz, int line, int column) {
     }
     return column;
 }
-/** req 2 **/
+
+/** req 2 (cont.)**/
 char** string_to_binary(char** matriz, int numpalavras) {
     char** DynamicMatrixCodes = create_Dynamic_Matrix(numpalavras, MAX_COLS_UFP6);
 
@@ -169,18 +132,6 @@ char** string_to_binary(char** matriz, int numpalavras) {
     return DynamicMatrixCodes;
 }
 
-/*
- *
- * funlção para inserir os dados num char e uma nos binarios ou seja uma big função para 2 mini funções
- * função para chamar structs pois estas vao ter
-void add_to_matrix(DYNAMICMATRIX *matrix, int row, int col, char value) {
-    if (matrix != NULL && row >= 0 && row < matrix->rows && col >= 0 && col < matrix->cols) {
-        *(*(matrix->data + row) + col) = value;
-    } else {
-        printf("Posição inválida na matriz.\n");
-    }
-}*/
-
 char gerarPalavraAleatoria(char *palavra, int tamanho) {
     const char caracteresPermitidos[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     int lenCaracteresPermitidos = strlen(caracteresPermitidos);
@@ -195,12 +146,7 @@ char gerarPalavraAleatoria(char *palavra, int tamanho) {
     return *palavra;
 }
 
-/** req 3
- * aqui podemos definir onde colocamos os determinados valores dentro das matrizes
- * para teste primeiro damos print a matriz inicial e depois print com a insercao
- *
- * **/
-
+/** req 3 **/
 
 void add_to_matrix(char **Matrix1, int row, int collum, int numRow, int numCollum, const char *palavra) {
     if (row >= 0 && row < numRow && collum >= 0 && collum < numCollum) {
@@ -214,21 +160,21 @@ void add_to_matrix(char **Matrix1, int row, int collum, int numRow, int numCollu
     }
 }
 
-/** req 3 **/
+/** req 3 (cont.)**/
 void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col) {
     if (matrix != NULL && row >= 0 && row < matrix->rows && col >= 0 && col < matrix->cols) {
-        // Deslocar os elementos da matriz para cobrir a posição removida
+
         for (int i = row; i < matrix->rows - 1; i++) {
             for (int j = col; j < matrix->cols - 1; j++) {
                 *(*(matrix->data + i) + j) = *(*(matrix->data + i + 1) + j + 1);
             }
         }
 
-        // Reduzir o número de linhas e colunas na matriz
+
         matrix->rows--;
         matrix->cols--;
 
-        // Realocar memória para a matriz com o novo tamanho
+
         matrix->data = (char **) realloc(matrix->data, matrix->rows * sizeof(char *));
         for (int i = 0; i < matrix->rows; i++) {
             matrix->data[i] = (char *) realloc(matrix->data[i], matrix->cols * sizeof(char));
@@ -333,8 +279,6 @@ void merge(int *vetor, int *vAuxiliar , int posicaoInicial , int metade , int po
         vetor[contador++] = vAuxiliar[inicioVAuxiliar++];
 }
 
-
-
 /** req 6 **/
 void sort_decrescent(int *vetor, int tamanho) {
     /**
@@ -386,7 +330,7 @@ AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size) {
     return ad_words_holder;
 }
 
-//novo fill array
+// fill array
 AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size) {
     ad_words_holder.pvalwordsholder = realloc(ad_words_holder.pvalwordsholder, new_size * sizeof(VAL_AD_WORDS_HOLDER));
     ad_words_holder.size = new_size;
@@ -510,7 +454,6 @@ void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate
     list->count++;
 }
 
-
 void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
     if (index < 0 || index >= list->count) {
         printf("Índice inválido para exclusão.\n");
@@ -542,10 +485,10 @@ void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
 
 DYNAMICMATRIX* pesquisar_palavra_ll(LL_WORDS_HOLDER *list, const char *palavra,const char *code) {
     for (int i = 0; i < list->count; i++) {
-        // Realizar a pesquisa apenas nos elementos desejados (ajuste conforme necessário)
+
         if (strcmp((const char *) list->head->data.set1.DynamicMatrixPals->data, palavra) == 0 ||
             (strcmp((const char *) list->head->data.set1.DynamicMatrixCodes->data, code)== 0)) {
-            // Palavra encontrada, retornar o código UFP6 ou índice do elemento
+
             return list->head->data.set1.DynamicMatrixPals;
         }
     }
@@ -556,7 +499,7 @@ DYNAMICMATRIX* pesquisar_palavra_ll(LL_WORDS_HOLDER *list, const char *palavra,c
 void printArray(AD_WORDS_HOLDER array_dinamico) {
     for (int i = 0; i < array_dinamico.count; ++i) {
         printf("%ld", array_dinamico.pvalwordsholder[i].data);
-        // Print other fields as needed
+
     }
     printf("\n");
 }
@@ -569,10 +512,14 @@ void write_to_file(const char *filename, AD_WORDS_HOLDER ad_words_holder) {
     }
 
     for (int i = 0; i < ad_words_holder.count; i++) {
-        fprintf(file, "%s %ld\n", ad_words_holder.pvalwordsholder[i].wordsHolder.set1.DynamicMatrixPals->data[0], ad_words_holder.pvalwordsholder[i].data);
-    }
+        if (ad_words_holder.pvalwordsholder->wordsHolder.set1.DynamicMatrixPals != NULL) {
+            fprintf(file, "Words: %s,Data: %ld\n",ad_words_holder.pvalwordsholder->wordsHolder.set1.DynamicMatrixPals->data[0], ad_words_holder.pvalwordsholder->data);
+        } else {
+            fprintf(file, "Error: DynamicMatrixPals is NULL. Cannot print data.\n");
+        }
 
-    fclose(file);
+        fclose(file);
+    }
 }
 
 AD_WORDS_HOLDER read_from_file(const char *filename) {
@@ -584,29 +531,24 @@ AD_WORDS_HOLDER read_from_file(const char *filename) {
         exit(EXIT_FAILURE);
     }
 
-    // Assuming a maximum line length of 100 characters
     char line[100];
 
-    // Count the number of lines in the file
     int count = 0;
     while (fgets(line, sizeof(line), file) != NULL) {
         count++;
     }
 
-    // Allocate memory based on the number of lines
     ad_words_holder.size = count;
-    ad_words_holder.count = 0; // Initialize count to 0, it will be incremented while reading
+    ad_words_holder.count = 0;
     ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
 
-    // Reset the file pointer to the beginning of the file
     fseek(file, 0, SEEK_SET);
 
-    // Read data from the file
+
     while (fgets(line, sizeof(line), file) != NULL) {
-        // Assuming each line contains a word and its associated code
+
         sscanf(line, "%s %ld", ad_words_holder.pvalwordsholder[ad_words_holder.count].wordsHolder.set1.DynamicMatrixPals->data[0], &ad_words_holder.pvalwordsholder[ad_words_holder.count].data);
 
-        // Increment count
         ad_words_holder.count++;
     }
 
@@ -615,7 +557,6 @@ AD_WORDS_HOLDER read_from_file(const char *filename) {
     return ad_words_holder;
 }
 
-// Function to write AD_WORDS_HOLDER structure to a binary file
 void writeToFileBinary(const char *filename, AD_WORDS_HOLDER ad_words_holder) {
     FILE *file = fopen(filename, "wb");
     if (file == NULL) {
@@ -623,14 +564,11 @@ void writeToFileBinary(const char *filename, AD_WORDS_HOLDER ad_words_holder) {
         exit(EXIT_FAILURE);
     }
 
-    // Write the entire structure to the file
     fwrite(&ad_words_holder, sizeof(AD_WORDS_HOLDER), 1, file);
 
     fclose(file);
 }
 
-
-// Function to read AD_WORDS_HOLDER structure from a binary file
 AD_WORDS_HOLDER readFromFileBinary(const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
@@ -640,7 +578,6 @@ AD_WORDS_HOLDER readFromFileBinary(const char *filename) {
 
     AD_WORDS_HOLDER ad_words_holder;
 
-    // Read the entire structure from the file
     fread(&ad_words_holder, sizeof(AD_WORDS_HOLDER), 1, file);
 
     fclose(file);
@@ -648,9 +585,10 @@ AD_WORDS_HOLDER readFromFileBinary(const char *filename) {
     return ad_words_holder;
 }
 
+
 int main_projeto(int argc, const char *argv[]) {
 
-    srand(time(NULL)); //gera a aleatoriedade
+    srand(time(NULL));
 
     int linhasC1 = 7;
     int colunasC1 = MAX_COLS_PALS;
@@ -696,73 +634,29 @@ int main_projeto(int argc, const char *argv[]) {
 
     printArray(array_dinamico);
 
-    /*Criação da matrix Matrix1
-    char **Matrix1 = create_Dynamic_Matrix(linhasC1, colunasC1);
-    fill_Matrix(Matrix1, linhasC1, colunasC1, dadosC1);*/
-
-    //fill_Matrix(Matrix1, LINES, COLS, (char[10]) palavra);
-
-    /** Imprimir as matrizes para teste
-     *
-     *  printf("Matriz Dinâmica C1:\n");
-     *  print_Matrix(DynamicMatrixC1, linhasC1, colunasC1);
-     *  printf("\nMatriz Dinâmica C2:\n");
-     *  print_Matrix(DynamicMatrixC2, linhasC2, colunasC2);
-     *
-     */
-
-
-
-    /* teste decimal to binary e string to binary
-     * decimal to binary com os numeros funciona bem, o string to binary não está a dar o
-     * resultado esperado, por exemplo "aba" segundo o enunciado tem que dar:
-     * 101010111010 , mas deu isto : 101010101111101010
-     */
-
-    // Exemplo de uso
-
-    /* for(int j=0;j<7;j++){
-         gerarPalavraAleatoria(palavra, 7);
-         printf("\n");
-         add_to_matrix(Matrix1, j, 0, 7, 20, valor);
-     }*/
-    // print_Matrix(Matrix1, linhasC1,colunasC1);
-
     check_segment(DynamicMatrixC1,DynamicMatrixC2,6,3);
 
     print_Matrix(DynamicMatrixC1, linhasC1,colunasC1);
 
     char ** DynamicMatrixCodesC1 = string_to_binary(DynamicMatrixC1,linhasC1);
 
-    //check_segment(DynamicMatrixC1,DynamicMatrixCodesC1);
-    //string_to_binary(Matrix1);
-    //add_to_matrix(DynamicMatrixC1, 3, 4, 4, 5, valor,palavra);
-    // a usar notação array funciona, apontadores já não(nao sei porquê)
-    /*
-     * free_Dynamic_Matrix(DynamicMatrixC1, linhasC1);
-     * free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
-     */
     print_Matrix(DynamicMatrixCodesC1, linhasC1,colunasC1);
 
-    //free_Dynamic_Matrix(DynamicMatrixC1,linhasC1);
     free_Dynamic_Matrix(DynamicMatrixCodesC1,linhasC1);
 
     AD_WORDS_HOLDER ad_words_holder = ARRDYN_WORDS_HOLDER(10);
     ad_words_holder.size = 10;
     ad_words_holder.count = 3;
-    //ad_words_holder.pvalwordsholder = malloc(ad_words_holder.size * sizeof(VAL_AD_WORDS_HOLDER));
     ad_words_holder.pvalwordsholder = malloc(sizeof(VAL_AD_WORDS_HOLDER) * ad_words_holder.size);
 
 
-    // Insert elements in sorted order
     ad_words_holder = inserir_ordenado(ad_words_holder, "10");
     ad_words_holder = inserir_ordenado(ad_words_holder, "5");
     ad_words_holder = inserir_ordenado(ad_words_holder, "8");
 
-    int posicao_para_eliminar = 2;
+    int posicao_para_eliminar = 1;
     ad_words_holder = eliminar_elemento(ad_words_holder, posicao_para_eliminar);
 
-    // Print the result
     for (int i = 0; i < ad_words_holder.count; i++) {
         printf("%ld\n", ad_words_holder.pvalwordsholder[i].data);
     }
@@ -770,43 +664,13 @@ int main_projeto(int argc, const char *argv[]) {
     // os varios frees
     free_Dynamic_Matrix(DynamicMatrixC1, linhasC1);
     free_Dynamic_Matrix(DynamicMatrixC2, linhasC2);
-    //free_Dynamic_Matrix(DynamicMatrixCodesC1, linhasC1); ESTE FREE EM CONCRETO CAUSA SEGMENTATION FAULT
+    free(val_Ad_Words_Holder);
+    //free_Dynamic_Matrix(DynamicMatrixCodesC1, linhasC1);
 
 
     write_to_file("output",ad_words_holder);
-    read_from_file("output");
+    //read_from_file("output");
     free(ad_words_holder.pvalwordsholder);
-
-
-
-    //  LL_WORDS_HOLDER wordList;
-    // wordList.head = NULL;
-    //  wordList.count = 0;
-
-    // WORDS_HOLDER data1;
-
-    //  strcpy(data1..set1.[0], "Apple");
-    // data1.codes[0] = 101;
-
-    // strcpy(data1.words[1], "Banana");
-    // data1.codes[1] = 102;
-
-    // strcpy(data1.words[2], "Cherry");
-    // data1.codes[2] = 103;
-
-
-    //  for (int i = 0; i < 3; i++) {
-    //      printf("Word: %s, Code: %d\n", data1.words[i], data1.codes[i]);
-    //  }
-
-    //  char update1[] = "2023-01-01";
-    //   insertNode(&wordList, data1, update1);
-
-    //  for (int i = 0; i < 3; i++) {
-    //      printf("Word: %s, Code: %d,%s\n", wordList.head->data.words[i], wordList.head->data.codes[i],wordList.head->lastUpdate);
-    //}
-
-
 
     return 0;
 }

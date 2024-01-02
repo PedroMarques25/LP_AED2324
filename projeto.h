@@ -65,12 +65,6 @@ typedef struct Ll_Words_Holder {
 
 int main_projeto(int argc, const char *argv[]);
 
-AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size);
-
-AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size);
-
-AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char *nova_data_modificacao);
-
 char *content_to_binary(char *string);
 
 void add_to_matrix(char **matrix, int row, int collum, int numRow, int numCollum, const char *palavra);
@@ -100,5 +94,25 @@ char **string_to_binary(char **matriz, int numpalavras);
 int decimal_to_binary(int value, char **matriz, int line, int column);
 
 void print_matrix(char **matrix);
+
+AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size);
+
+AD_WORDS_HOLDER resize_AD_WORDS_HOLDER(AD_WORDS_HOLDER ad_words_holder, int new_size);
+
+AD_WORDS_HOLDER inserir_ordenado(AD_WORDS_HOLDER ad_words_holder, char *nova_data_modificacao);
+
+void write_to_file(const char *filename, AD_WORDS_HOLDER ad_words_holder);
+
+AD_WORDS_HOLDER read_from_file(const char *filename);
+
+DYNAMICMATRIX* pesquisar_palavra_ll(LL_WORDS_HOLDER *list, const char *palavra,const char *code);
+
+void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index);
+
+void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[], int index);
+
+void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]);
+
+AD_WORDS_HOLDER eliminar_elemento(AD_WORDS_HOLDER ad_words_holder, int posicao);
 
 #endif //PROJETOLPAED1_PROJETO_H
