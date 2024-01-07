@@ -16,31 +16,16 @@ typedef struct storewordufp6{
     char *palavra;
     char *codigoUFP6;
 } STOREWORDUFP6;
-
 // Estrutura que contém as matrizes dinâmicas
-typedef struct matrizdados{
+typedef struct dynamicmatriz{
     STOREWORDUFP6 **conjunto1; // Primeiro conjunto de palavras e códigos
     STOREWORDUFP6 **conjunto2; // Segundo conjunto de palavras e códigos
     int tamanho1;            // Tamanho do primeiro conjunto
     int tamanho2;            // Tamanho do segundo conjunto
-} MATRIZDADOS;
-
-
-
-typedef struct dynamicmatrix {
-    char **data;
-    int rows;
-    int cols;
 } DYNAMICMATRIX;
 
-typedef struct set {
-    DYNAMICMATRIX *DynamicMatrixPals;
-    DYNAMICMATRIX *DynamicMatrixCodes;
-} SET;
-
 typedef struct words_holder {
-    SET set1;
-    SET set2;
+    DYNAMICMATRIX set1;
 } WORDS_HOLDER;
 
  /*typedef struct words_holder {
@@ -80,15 +65,15 @@ typedef struct Ll_Words_Holder {
 
 int main_projeto(int argc, const char *argv[]);
 
-MATRIZDADOS *criarMatrizDados();
+DYNAMICMATRIX *criarMatrizDados();
 
 char *content_to_binary(char *string);
 
-void adicionarPalavra(MATRIZDADOS *matriz, int conjunto, char *palavra, const char *codigoUFP6);
+void adicionarPalavra(DYNAMICMATRIX *matriz, int conjunto, char *palavra);
 
-void listarPalavras(MATRIZDADOS *matriz, int conjunto);
+void listarPalavras(DYNAMICMATRIX *matriz, int conjunto);
 
-void liberarMemoria(MATRIZDADOS *matriz);
+void liberarMemoria(DYNAMICMATRIX *matriz);
 
 void add_to_matrix(char **matrix, int row, int collum, int numRow, int numCollum, const char *palavra);
 
