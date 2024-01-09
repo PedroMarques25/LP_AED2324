@@ -77,13 +77,13 @@ void liberarMemoria(DYNAMICMATRIX *matriz);
 
 void add_to_matrix(char **matrix, int row, int collum, int numRow, int numCollum, const char *palavra);
 
-char gerarPalavraAleatoria(char *palavra, int tamanho);
+char* gerarPalavraAleatoria();
 
 void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col);
 
-void check_segment(char **matrix, char **matrix2, int palavras1, int palavras2);
+void check_segment(DYNAMICMATRIX *dynamicmatrix);
 
-char** seach_string_word( char *sequence,  char **words, int numWords);
+void seach_string_word( char *sequence, DYNAMICMATRIX matrix);
 
 void sort_crescent(int *vetor, int tamanho);
 
