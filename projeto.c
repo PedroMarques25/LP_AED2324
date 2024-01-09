@@ -200,22 +200,25 @@ char* string_to_binary(char* palavra) {
 }
 /** req 3**/
 char* gerarPalavraAleatoria() {
+    char temppalavra[MAX_COLS_PALS];
     char *palavra;
     const char caracteresPermitidos[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     int lenCaracteresPermitidos = strlen(caracteresPermitidos);
     const char numerocaracteresPermitidos[] = "1234567";
-    char tamanho= numerocaracteresPermitidos[rand() % lenCaracteresPermitidos];
-    tamanho = tamanho -'0';
-    for (int i = 0; i < tamanho - 1; i++) {
-         palavra[i] = caracteresPermitidos[rand() % lenCaracteresPermitidos];
+    int lennumeroCaracteresPermitidos= strlen(numerocaracteresPermitidos);
+    char tamanho = numerocaracteresPermitidos[rand() % lennumeroCaracteresPermitidos];
+   tamanho = tamanho -'0';
+    for (int i = 0; i < tamanho; i++) {
+        temppalavra[i] = caracteresPermitidos[rand() % lenCaracteresPermitidos];
     }
-    palavra[tamanho - 1] = '\0'; // Adicionar o char nulo no final
-    printf("%s", palavra);
+    temppalavra[tamanho] = '\0'; // Adicionar o char nulo no final
+    palavra= strdup(temppalavra);
 
     return palavra;
 }
 void adicionarPalavrarandom(DYNAMICMATRIX *matriz, int conjunto) {
     char* palavra=gerarPalavraAleatoria();
+
     STOREWORDUFP6 *novaPalavra = criarPalavraUFP6(palavra);
 
     if (conjunto == 1) {
@@ -263,7 +266,7 @@ void check_segment(DYNAMICMATRIX *matriz) {
     STOREWORDUFP6** segundo = matriz->conjunto2;
     for(int i=0;i<matriz->tamanho1;i++) {
         for (int j = 0; j <matriz->tamanho2;j++){
-            value = strcmp(primeiro[i]->codigoUFP6,segundo[i]->codigoUFP6);
+            value = strcmp(primeiro[i]->codigoUFP6,segundo[j]->codigoUFP6);
             if(value == 0){
                 printf("\n");
                 printf("%s %s sao combinacoes iguais\n",matriz->conjunto1[i]->codigoUFP6,matriz->conjunto2[i]->codigoUFP6);
@@ -722,8 +725,6 @@ int main_projeto(int argc, const char *argv[]) {
 
     srand(time(NULL));
 
-
-
     DYNAMICMATRIX *matriz = criarMatrizDados();
 
     // Adicionar palavras aos conjuntos
@@ -731,10 +732,12 @@ int main_projeto(int argc, const char *argv[]) {
     adicionarPalavra(matriz, 1, "Palavra2");
     adicionarPalavra(matriz, 2, "Palavra1");
     adicionarPalavra(matriz, 2, "Palavra4");
-    //adicionarPalavrarandom(matriz, 2);
+    adicionarPalavrarandom(matriz, 2);
+
     check_segment(matriz);
+
     seach_string_word("al",*matriz);
-    // Listar palavras dos conjuntos na consola
+
     printf("Conjunto 1:\n");
     listarPalavras(matriz, 1);
 
