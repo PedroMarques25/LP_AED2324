@@ -235,28 +235,33 @@ void adicionarPalavrarandom(DYNAMICMATRIX *matriz, int conjunto) {
 
 
 //O(n^2)
-/*void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col) {
-    if (matrix != NULL && row >= 0 && row < matrix->rows && col >= 0 && col < matrix->cols) {
+void removepalavra(DYNAMICMATRIX *matrix, char* palavra,int conjunto) {
 
-        for (int i = row; i < matrix->rows - 1; i++) {
-            for (int j = col; j < matrix->cols - 1; j++) {
-                *(*(matrix->data + i) + j) = *(*(matrix->data + i + 1) + j + 1);
+    int value;
+    if (conjunto == 1) {
+        for (int i=0;i<matrix->tamanho1;i++) {
+           value = strcmp(matrix->conjunto1[i]->palavra,palavra);
+            if(value==0){
+                free(matrix->conjunto1[i]->palavra);
+                free(matrix->conjunto1[i]->codigoUFP6);
+                matrix->conjunto1 = realloc(matrix->conjunto1, (matrix->tamanho1-1) * sizeof(STOREWORDUFP6 *));
+                matrix->tamanho1--;
             }
         }
-
-
-        matrix->rows--;
-        matrix->cols--;
-
-
-        matrix->data = (char **) realloc(matrix->data, matrix->rows * sizeof(char *));
-        for (int i = 0; i < matrix->rows; i++) {
-            matrix->data[i] = (char *) realloc(matrix->data[i], matrix->cols * sizeof(char));
+    } else if (conjunto == 2){
+        for (int i=0;i<matrix->tamanho2;i++) {
+           value = strcmp(matrix->conjunto2[i]->palavra,palavra);
+            if(value==0){
+                free(matrix->conjunto2[i]->palavra);
+                free(matrix->conjunto2[i]->codigoUFP6);
+                matrix->conjunto2 = realloc(matrix->conjunto2, (matrix->tamanho2-1) * sizeof(STOREWORDUFP6 *));
+                matrix->tamanho2--;
+            }
         }
-    } else {
+}else {
         printf("Posição inválida na matriz.\n");
     }
-}*/
+}
 
 /** req 4 **/
 //O(n^2)
@@ -511,7 +516,7 @@ WORDS_HOLDER Init_Wordsholder(DYNAMICMATRIX matrix) {
         strt->set1.conjunto1[i]->palavra = matrix.conjunto1[i]->palavra;
         strt->set1.conjunto1[i]->codigoUFP6 = matrix.conjunto1[i]->codigoUFP6;
     }
-
+        strt->set1.tamanho1=matrix.tamanho1;
     for(int i = 0; i < matrix.tamanho2; i++) {
         strt->set1.conjunto2[i] = (STOREWORDUFP6 *)malloc(sizeof(STOREWORDUFP6));
         if (strt->set1.conjunto2[i] == NULL) {
@@ -522,7 +527,7 @@ WORDS_HOLDER Init_Wordsholder(DYNAMICMATRIX matrix) {
         strt->set1.conjunto2[i]->palavra = matrix.conjunto2[i]->palavra;
         strt->set1.conjunto2[i]->codigoUFP6 = matrix.conjunto2[i]->codigoUFP6;
     }
-
+    strt->set1.tamanho2=matrix.tamanho2;
     return *strt;
 }
 void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
@@ -733,7 +738,7 @@ int main_projeto(int argc, const char *argv[]) {
     adicionarPalavra(matriz, 2, "Palavra1");
     adicionarPalavra(matriz, 2, "Palavra4");
     adicionarPalavrarandom(matriz, 2);
-
+    removepalavra(matriz,"Palavra2",1);
     check_segment(matriz);
 
     seach_string_word("al",*matriz);
@@ -747,27 +752,56 @@ int main_projeto(int argc, const char *argv[]) {
     WORDS_HOLDER data1 = Init_Wordsholder(*matriz);
     STOREWORDUFP6** primeiro = data1.set1.conjunto1;
     STOREWORDUFP6** segundo = data1.set1.conjunto2;
+    DYNAMICMATRIX  size = data1.set1;
 
-    for (int i = 0; i < 2; i++) {
-       printf("Word: %s code:%s\n", primeiro[i]->palavra,primeiro[i]->codigoUFP6);
+    for (int i = 0; i < size.tamanho1; i++) {
+       printf("Wordholder: %s code:%s\n", primeiro[i]->palavra,primeiro[i]->codigoUFP6);
    }
-    for (int i = 0; i < 2; i++) {
-        printf("Word: %s code:%s\n",segundo[i]->palavra,segundo[i]->codigoUFP6);
+    for (int j = 0; j < size.tamanho2; j++) {
+        printf("Wordholde: %s code:%s\n",segundo[j]->palavra,segundo[j]->codigoUFP6);
     }
 
     LL_WORDS_HOLDER wordList;
     wordList.head = NULL;
     wordList.count = 0;
 
-    char update1[] = "2023-01-01";
+    char update1[] = "1/1/23";
+    char update2[] = "2/1/23";
     insertNode(&wordList, data1, update1);
 
-    for (int i = 0; i < 2; i++) {
-        printf("Word: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
+    insertNodeAtIndex(&wordList, data1, update2,0);
+
+    for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
   }
-    for (int i = 0; i < 2; i++) {
-        printf("Word: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
+    for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
     }
+    printf("%s",wordList.head->lastUpdate);
+    for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
+    }
+    for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
+    }
+    printf("%s",wordList.head->next->lastUpdate);
+
+    deleteNodeAtIndex(&wordList,0);
+
+    for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
+    }
+    for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
+    }
+    printf("%s",wordList.head->lastUpdate);
+    for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
+    }
+    for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
+        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
+    }
+    printf("%s",wordList.head->next->lastUpdate);
     // Liberar memória alocada
    liberarMemoria(matriz);
 

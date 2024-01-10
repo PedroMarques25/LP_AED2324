@@ -79,7 +79,7 @@ void add_to_matrix(char **matrix, int row, int collum, int numRow, int numCollum
 
 char* gerarPalavraAleatoria();
 
-void remove_from_matrix(DYNAMICMATRIX *matrix, int row, int col);
+void removepalavra(DYNAMICMATRIX *matrix, char *palavra,int conjunto);
 
 void check_segment(DYNAMICMATRIX *dynamicmatrix);
 
