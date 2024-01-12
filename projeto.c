@@ -27,7 +27,7 @@ char * UFP6[] = { //Código UFP6
         "0",  "1",  "10", "11",  "100", "101", "110", "111", "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111", "10000", "10001", "10010", "10011", "10100", "10101", "10110", "10111", "11000", "11001", "11010", "11011", "11100", "11101", "11110", "11111", "100000", "100001", "100010", "100011", "100100", "100101", "100110", "100111", "101000", "101001", "101010", "101011", "101100", "101101", "101110", "101111", "110000", "110001", "110010", "110011", "110100", "110101", "110110", "110111", "111000", "111001", "111010", "111011", "111100", "111101",
 };
 
-STOREWORDUFP6 *criarPalavraUFP6( char *palavra) {
+STOREWORDUFP6 *criarPalavraUFP6(char *palavra) {
     STOREWORDUFP6 *novaPalavra = (STOREWORDUFP6 *)malloc(sizeof(STOREWORDUFP6));
     if (novaPalavra == NULL) {
         perror("Erro ao alocar memória");
@@ -79,11 +79,11 @@ void adicionarPalavra(DYNAMICMATRIX *matriz, int conjunto, char *palavra) {
 void listarPalavras(DYNAMICMATRIX *matriz, int conjunto) {
     if (conjunto == 1) {
         for (int i = 0; i < matriz->tamanho1; i++) {
-            printf("Palavra: %s, Código UFP6: %s\n", matriz->conjunto1[i]->palavra, matriz->conjunto1[i]->codigoUFP6);
+            printf("Palavra: %s, Codigo UFP6: %s\n", matriz->conjunto1[i]->palavra, matriz->conjunto1[i]->codigoUFP6);
         }
     } else if (conjunto == 2) {
         for (int i = 0; i < matriz->tamanho2; i++) {
-            printf("Palavra: %s, Código UFP6: %s\n", matriz->conjunto2[i]->palavra, matriz->conjunto2[i]->codigoUFP6);
+            printf("Palavra: %s, Codigo UFP6: %s\n", matriz->conjunto2[i]->palavra, matriz->conjunto2[i]->codigoUFP6);
         }
     }
 }
@@ -125,7 +125,7 @@ char** create_Dynamic_Matrix(int lines, int cols) {
     return matrix;
 }
 //O(n)
-void free_Dynamic_Matrix(char** matrix, int lines) {
+/*void free_Dynamic_Matrix(char** matrix, int lines) {
     for (int i = 0; i < lines; i++) {
         free(matrix[i]);
     }
@@ -141,7 +141,7 @@ void fill_Matrix(char** matrix, int lines, int cols, char dados[][MAX_COLS_PALS]
 
         strncpy(matrix[i], dados[i], cols);
     }
-}
+}*/
 /**requisito 2 **/
 //O(n)
 int decimal_to_binary(int value, char *matriz, int column) {
@@ -149,7 +149,7 @@ int decimal_to_binary(int value, char *matriz, int column) {
     //array com os valores de binario
     // counter for binary array
 
-    printf("\nThe string in binary is ");
+    //printf("\nThe string in binary is ");
 
     int h = 0;
     char charvalue='\0';
@@ -163,7 +163,7 @@ int decimal_to_binary(int value, char *matriz, int column) {
     }
 
     for (int j = h - 1; j >= 0; j--, column++) {
-        printf("%d", binaryNum[j]);
+        //printf("%d", binaryNum[j]);
         charvalue = binaryNum[j]+'0';
         matriz[column] = charvalue;
     }
@@ -194,7 +194,6 @@ char* string_to_binary(char* palavra) {
             }
         }
     codigoufp6[g] = '\0';
-
 
     return codigoufp6;
 }
@@ -237,22 +236,33 @@ void adicionarPalavrarandom(DYNAMICMATRIX *matriz, int conjunto) {
 //O(n^2)
 void removepalavra(DYNAMICMATRIX *matrix, char* palavra,int conjunto) {
 
+    int j;
     int value;
     if (conjunto == 1) {
-        for (int i=0;i<matrix->tamanho1;i++) {
+        for ( int i=0;i<matrix->tamanho1;i++) {
            value = strcmp(matrix->conjunto1[i]->palavra,palavra);
             if(value==0){
-                free(matrix->conjunto1[i]->palavra);
-                free(matrix->conjunto1[i]->codigoUFP6);
-                matrix->conjunto1 = realloc(matrix->conjunto1, (matrix->tamanho1-1) * sizeof(STOREWORDUFP6 *));
-                matrix->tamanho1--;
+                j=i;
+                while( j!=matrix->tamanho1) {
+                    matrix->conjunto1[j]->palavra=matrix->conjunto1[j+1]->palavra;
+                    matrix->conjunto1[j]->codigoUFP6=matrix->conjunto1[j+1]->codigoUFP6;
+                    j++;
+                }free(matrix->conjunto1[i]->palavra);
+                 free(matrix->conjunto1[i]->codigoUFP6);
+                 matrix->conjunto1 = realloc(matrix->conjunto1, (matrix->tamanho1-1) * sizeof(STOREWORDUFP6 *));
+                 matrix->tamanho1--;
             }
         }
     } else if (conjunto == 2){
         for (int i=0;i<matrix->tamanho2;i++) {
            value = strcmp(matrix->conjunto2[i]->palavra,palavra);
             if(value==0){
-                free(matrix->conjunto2[i]->palavra);
+                j=i;
+                while( j!=matrix->tamanho1) {
+                    matrix->conjunto2[i]->palavra=matrix->conjunto2[i+1]->palavra;
+                    matrix->conjunto2[j]->codigoUFP6=matrix->conjunto2[j+1]->codigoUFP6;
+                    j++;
+                }free(matrix->conjunto2[i]->palavra);
                 free(matrix->conjunto2[i]->codigoUFP6);
                 matrix->conjunto2 = realloc(matrix->conjunto2, (matrix->tamanho2-1) * sizeof(STOREWORDUFP6 *));
                 matrix->tamanho2--;
@@ -287,121 +297,15 @@ void seach_string_word(char *sequencia,  DYNAMICMATRIX matrix) {
     for (int i = 0; i < matrix.tamanho1; i++) {
         //Verifica se a sequência de pesquisa ocorre na palavra
         if (strstr(matrix.conjunto1[i]->palavra, sequencia) != NULL) {
-            printf("%s  %s\n", matrix.conjunto1[i]->palavra, matrix.conjunto1[i]->codigoUFP6);
+            printf("palavra com sequencia de pesquisa: %s  %s\n", matrix.conjunto1[i]->palavra, matrix.conjunto1[i]->codigoUFP6);
         }
     }
         for (int i = 0; i < matrix.tamanho2; i++) {
             //Verifica se a sequência de pesquisa ocorre na palavra
             if (strstr(matrix.conjunto2[i]->palavra, sequencia) != NULL) {
-                printf("%s  %s\n", matrix.conjunto2[i]->palavra, matrix.conjunto2[i]->codigoUFP6);
+                printf("palavra com sequencia de pesquisa: %s  %s\n", matrix.conjunto2[i]->palavra, matrix.conjunto2[i]->codigoUFP6);
             }
         }
-}
-/** req 6 **/
-void sort_crescent(int *vetor, int tamanho) {
-    /**
-     *  implementação do merge sort (sugestão Prof. Torres)
-     */
-
-    //Alocando um espaço na memória para servir de vetor auxiliar
-    int *vAuxiliar = malloc(sizeof(int)*tamanho);
-    //Chamando a função sort para começar o processo de divisão do vetor
-    sort(vetor,vAuxiliar,0,tamanho-1);
-    free(vAuxiliar);
-
-}
-
-void sort(int *vetor, int *vAuxiliar , int posicaoInicial , int posicaoFinal){
-    //Verificando se o vetor tem tamanho maior que 1
-    if(posicaoInicial>=posicaoFinal)
-        return;
-
-    //Com o vetor de tamanho maior que 1 ele divide esse vetor pegando a posicao que fica na metade do vetor;
-    int metade = (posicaoInicial+posicaoFinal) / 2;
-
-    //Fazendo uma chamada recursiva para ordenar a primeira metade do vetor
-    sort(vetor,vAuxiliar,posicaoInicial,metade);
-    //Fazendo uma chamada recursiva para ordenar a segunda metade do vetor
-    sort(vetor,vAuxiliar,metade+1,posicaoFinal);
-
-    //Faz uma verificação para saber se os vetores estão ordenados entre si
-    if(vetor[metade]<=vetor[metade+1])
-        return;
-
-    //Chamando a função merge para reorganizar o vetor
-    merge(vetor,vAuxiliar,posicaoInicial,metade,posicaoFinal);
-
-}
-
-void merge(int *vetor, int *vAuxiliar , int posicaoInicial , int metade , int posicaoFinal){
-
-    int contador;
-    //Armazena a posição inicial do vetor principal
-    int inicioVetor = posicaoInicial;
-    //Armazena a posição inicial do vetor auxiliar
-    int inicioVAuxiliar = metade + 1;
-
-    //Fazendo uma cópia do vetor princpal para o vetor auxiliar
-    for(contador = posicaoInicial ; contador <= posicaoFinal ; contador ++)
-        vAuxiliar[contador]=vetor[contador];
-
-    //Reiniciando o contador
-    contador = posicaoInicial;
-
-    //Percorrendo os vetores
-    while(inicioVetor <= metade && inicioVAuxiliar <= posicaoFinal){
-        //Verifica qual valores são maior e menor  e reorganiza o vator principal
-        if(vAuxiliar[inicioVetor]<vAuxiliar[inicioVAuxiliar])
-            vetor[contador++]=vAuxiliar[inicioVetor++];
-        else
-            vetor[contador++]=vAuxiliar[inicioVAuxiliar++];
-
-    }
-
-    //Passando o que sobrar da primeira metade para o vetor principal
-    while(inicioVetor<=metade)
-        vetor[contador++] = vAuxiliar[inicioVetor++];
-
-    //Passando o que sobrar da segunda metade para o vetor principal
-    while(inicioVAuxiliar<=posicaoFinal)
-        vetor[contador++] = vAuxiliar[inicioVAuxiliar++];
-}
-
-/** req 6 **/
-void sort_decrescent(int *vetor, int tamanho) {
-    /**
-     *  implementação do merge sort ou MSD para os chars(sugestão Prof. Torres)
-     */
-    //Alocando um espaço na memória para servir de vetor auxiliar
-    int *vAuxiliar = malloc(sizeof(int)*tamanho);
-    //Chamando a função sort para começar o processo de divisão do vetor
-    sort_inverso(vetor,vAuxiliar,0,tamanho / 2, tamanho-1);
-    free(vAuxiliar);
-}
-
-void sort_inverso(int *vetor, int *vAuxiliar, int posicaoInicial, int metade, int posicaoFinal){
-    int contador;
-    int inicioVetor = posicaoInicial;
-    int inicioVAuxiliar = metade + 1;
-
-    for (contador = posicaoInicial; contador <= posicaoFinal; contador++)
-        vAuxiliar[contador] = vetor[contador];
-
-    contador = posicaoInicial;
-
-    while (inicioVetor <= metade && inicioVAuxiliar <= posicaoFinal) {
-        if (vAuxiliar[inicioVetor] >= vAuxiliar[inicioVAuxiliar]) // Inverte a lógica de comparação
-            vetor[contador++] = vAuxiliar[inicioVetor++];
-        else
-            vetor[contador++] = vAuxiliar[inicioVAuxiliar++];
-    }
-
-    while (inicioVetor <= metade)
-        vetor[contador++] = vAuxiliar[inicioVetor++];
-
-    while (inicioVAuxiliar <= posicaoFinal)
-        vetor[contador++] = vAuxiliar[inicioVAuxiliar++];
-
 }
 
 AD_WORDS_HOLDER ARRDYN_WORDS_HOLDER(int size) {
@@ -552,7 +456,7 @@ void insertNode(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate[]) {
             newNode->next = current;
             newNode->prev = current->prev;
             if (current->prev != NULL) {
-                current->prev->next = newNode;
+                current = newNode;
             } else {
                 list->head = newNode;
             }
@@ -575,9 +479,6 @@ void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate
 
     if (index == 0) {
         newNode->next = list->head;
-        if (list->head != NULL) {
-            list->head->prev = newNode;
-        }
         list->head = newNode;
     } else {
         NODE_LL_WORDS_HOLDER *current = list->head;
@@ -587,7 +488,7 @@ void insertNodeAtIndex(LL_WORDS_HOLDER *list, WORDS_HOLDER data, char lastUpdate
         newNode->next = current->next;
         newNode->prev = current;
         if (current->next != NULL) {
-            current->next->prev = newNode;
+            current = newNode;
         }
         current->next = newNode;
     }
@@ -606,17 +507,14 @@ void deleteNodeAtIndex(LL_WORDS_HOLDER *list, int index) {
     if (index == 0) {
 
         list->head = current->next;
-        if (list->head != NULL) {
-            list->head->prev = NULL;
-        }
     } else {
 
         for (int i = 0; i < index; i++) {
             current = current->next;
         }
-        current->prev->next = current->next;
+        current = current->next;
         if (current->next != NULL) {
-            current->next->prev = current->prev;
+            current = current->prev;
         }
     }
 
@@ -733,12 +631,13 @@ int main_projeto(int argc, const char *argv[]) {
     DYNAMICMATRIX *matriz = criarMatrizDados();
 
     // Adicionar palavras aos conjuntos
-    adicionarPalavra(matriz, 1, "Palavra1");
-    adicionarPalavra(matriz, 1, "Palavra2");
-    adicionarPalavra(matriz, 2, "Palavra1");
-    adicionarPalavra(matriz, 2, "Palavra4");
-    adicionarPalavrarandom(matriz, 2);
-    removepalavra(matriz,"Palavra2",1);
+    for(int i =0;i<10;i++){
+        adicionarPalavrarandom(matriz, 1);
+    }
+    for(int i =0;i<10;i++){
+        adicionarPalavrarandom(matriz, 2);
+    }
+    //removepalavra(matriz,"Palavra2",1);
     check_segment(matriz);
 
     seach_string_word("al",*matriz);
@@ -767,41 +666,46 @@ int main_projeto(int argc, const char *argv[]) {
 
     char update1[] = "1/1/23";
     char update2[] = "2/1/23";
-    insertNode(&wordList, data1, update1);
+    char update3[] = "3/1/23";
+    char update4[] = "4/1/23";
 
+    insertNode(&wordList, data1, update1);
     insertNodeAtIndex(&wordList, data1, update2,0);
 
+
+
     for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
   }
     for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
     }
     printf("%s",wordList.head->lastUpdate);
     for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
     }
     for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
     }
     printf("%s",wordList.head->next->lastUpdate);
 
     deleteNodeAtIndex(&wordList,0);
 
     for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->data.set1.conjunto1[i]->palavra, wordList.head->data.set1.conjunto1[i]->codigoUFP6);
     }
     for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->data.set1.conjunto2[i]->palavra, wordList.head->data.set1.conjunto2[i]->codigoUFP6);
     }
     printf("%s",wordList.head->lastUpdate);
     for (int i = 0; i < wordList.head->data.set1.tamanho1; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->next->data.set1.conjunto1[i]->palavra, wordList.head->next->data.set1.conjunto1[i]->codigoUFP6);
     }
     for (int i = 0; i < wordList.head->data.set1.tamanho2; i++) {
-        printf("Words: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
+        printf("llWords: %s, Code: %s\n", wordList.head->next->data.set1.conjunto2[i]->palavra, wordList.head->next->data.set1.conjunto2[i]->codigoUFP6);
     }
     printf("%s",wordList.head->next->lastUpdate);
+
     // Liberar memória alocada
    liberarMemoria(matriz);
 
